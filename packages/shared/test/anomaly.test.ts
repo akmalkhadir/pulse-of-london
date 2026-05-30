@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { classifyAnomaly, ANOMALY_THRESHOLDS } from "../src/anomaly";
+import { classifyStatus } from "../src/anomaly";
 
 describe("classifyAnomaly", () => {
   it.each([
@@ -26,5 +27,25 @@ describe("classifyAnomaly", () => {
 
   it("exposes thresholds", () => {
     expect(ANOMALY_THRESHOLDS.muchBusier).toBe(1.4);
+  });
+});
+
+describe("classifyStatus", () => {
+  it.each([
+    [10, "good"],
+    [18, "good"],
+    [9, "minor"],
+    [6, "severe"],
+    [4, "severe"],
+    [0, "severe"],
+    [20, "severe"],
+  ] as const)("maps severity %s → %s", (sev, level) => {
+    expect(classifyStatus(sev)).toBe(level);
+  });
+
+  it("returns unknown for null/undefined/NaN", () => {
+    expect(classifyStatus(null)).toBe("unknown");
+    expect(classifyStatus(undefined)).toBe("unknown");
+    expect(classifyStatus(Number.NaN)).toBe("unknown");
   });
 });
