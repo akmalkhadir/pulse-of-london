@@ -97,20 +97,27 @@ disruption count is a possible minor extra, otherwise iceboxed.
 Two cleanly separated halves; the frontend never talks to TfL.
 
 ```
-TfL API ──(scheduled poll)──► Ingestor ──► snapshot.json (object store, CDN-fronted)
-                                                    │
-                                static frontend ◄───┘  (polls the snapshot URL)
+TfL API ──(GitHub Actions cron)──► Ingestor ──► snapshot.json (Cloudflare R2, CDN-fronted)
+                                                       │
+              Remix (React Router v7) loader, SSR ◄────┘  (edge-cached read; client then polls)
 ```
 
-- **Ingestor (scheduled poller, server-side):** polls TfL → computes anomalies → writes **one snapshot JSON**.
-  The `app_key` lives only here.
-- **Frontend (static):** fetches the snapshot, renders the map + panels. Knows nothing about TfL.
+- **Ingestor (scheduled poller):** a **GitHub Action** (cron) polls TfL → computes anomalies → writes **one
+  snapshot JSON** to R2. The `app_key` is a GitHub Actions secret and lives **only** here — it never reaches
+  the browser or the Remix runtime.
+- **Frontend (Remix / React Router v7, SSR):** a `loader` reads the *already-public* snapshot from R2 and
+  server-renders the initial map + headline (fast first paint + OG tags for sharing); the client then hydrates
+  and polls the snapshot for live updates. The frontend never talks to TfL — only to our snapshot.
 
-**Hosting (recommendation, finalise in plan):** static frontend + object store/CDN (e.g. Cloudflare Pages +
-R2). The poller likely runs as a **scheduled GitHub Action / Vercel / Netlify cron** rather than a Cloudflare
-Worker, because ~270 crowding calls/cycle exceeds the Workers free **50-subrequest** cap. The *pattern* is
-fixed; the exact poller host is an open question (§14) because of the trade-off between cron granularity
-(status freshness) and per-invocation limits.
+**Hosting (decided):**
+- **Poller:** scheduled **GitHub Action** — free for public repos, no per-invocation subrequest cap (so the
+  ~270 crowding calls/cycle is trivial), writing the snapshot to **Cloudflare R2**. Trade-off accepted: GitHub
+  cron granularity is ~5 min, so status freshness is ~5 min (fine for v1 — crowding only updates every 5 min
+  anyway). A Cloudflare Worker poller was ruled out by its free **50-subrequest** cap.
+- **Frontend:** **Remix in React Router v7 framework mode** (React + Vite) deployed on **Cloudflare Pages**
+  (edge). The loader reads R2; because Cloudflare Pages ignores loader `Cache-Control` by default, the loader
+  caches the snapshot read via the Workers **Caches API** (short TTL) to avoid re-fetching R2 every request.
+- Both are swappable (Vercel/Netlify also work), but this is the v1 target.
 
 ## 7. Components (isolated, testable units)
 
@@ -124,10 +131,11 @@ fixed; the exact poller host is an open question (§14) because of the trade-off
 | `Writer` | persist snapshot to object store; stable URL, short edge TTL | `write(Snapshot) → void` |
 | `SnapshotLogger` | append compact daily history (seeds future status-anomaly) | `append(SnapshotSummary) → void` |
 
-### Frontend
+### Frontend — Remix (React Router v7, framework mode), SSR on Cloudflare Pages
 | Unit | Responsibility |
 |---|---|
-| `SnapshotClient` | fetch + poll the snapshot every ~30–60s; expose `fresh \| stale \| error` state |
+| `snapshot.server` (loader) | read the snapshot from R2 + cache via the Workers Caches API; provide it for SSR of the initial view |
+| `SnapshotClient` | client-side after hydration: poll the snapshot every ~30–60s; expose `fresh \| stale \| error` state |
 | `MapView` | MapLibre GL; **dark** canvas + Thames outline; line layers from static geometry; station nodes by anomaly |
 | `HeadlinePanel` | the network verdict + components; shareable |
 | `DetailPanel` | tap a line/station → status, disruptions, live-vs-usual |
@@ -249,11 +257,14 @@ headline, panels, legend and footer; the **map canvas is dark** so the anomaly "
 - Predictive nudges; buses on the map; per-station arrivals; basemap toggle; dark/light user toggle; alerts;
   history replay.
 
-## 16. Open questions (resolve in the plan)
+## 16. Decisions resolved + remaining open questions
 
-1. **Poller host** — GitHub Actions vs Vercel/Netlify cron vs a small scheduled container, given the
-   ~270-call/5-min volume and the cron-granularity ↔ status-freshness trade-off.
-2. **Frontend framework** — vanilla TS + MapLibre (minimal) vs a thin reactive layer (e.g. Svelte).
+**Resolved**
+1. **Poller host → GitHub Actions** (cron, writes snapshot to Cloudflare R2). See §6.
+2. **Frontend → Remix in React Router v7 framework mode** (React + Vite + SSR), deployed on Cloudflare Pages.
+   See §6–§7.
+
+**Still open (resolve in the plan)**
 3. **"Google Sans" licensing** — proprietary; use where licensed/available, else the closest open substitute.
    (Anonymous Pro is open via Google Fonts.)
 4. **Final independent product name.**
