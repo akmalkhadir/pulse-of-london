@@ -1,0 +1,19 @@
+{
+  "name": "pulse-of-london",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc -b",
+    "ingest": "tsx packages/ingestor/src/index.ts",
+    "bootstrap:geometry": "tsx packages/ingestor/src/bootstrap-geometry.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "tsx": "^4.19",
+    "typescript": "^5.6",
+    "vitest": "^2.1"
+  }
+}
