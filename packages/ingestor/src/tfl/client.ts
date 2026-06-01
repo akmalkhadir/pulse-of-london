@@ -11,6 +11,16 @@ export interface TflClientOptions {
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
+export class TflHttpError extends Error {
+  constructor(
+    public readonly status: number,
+    path: string,
+  ) {
+    super(`TfL ${status} for ${path}`);
+    this.name = "TflHttpError";
+  }
+}
+
 export class TflClient {
   private readonly appKey: string;
   private readonly baseUrl: string;
@@ -42,13 +52,14 @@ export class TflClient {
       try {
         const res = await this.fetchFn(url, { signal: ctrl.signal });
         if (res.ok) return (await res.json()) as T;
+        const httpErr = new TflHttpError(res.status, path);
         // 4xx: caller error, do not retry.
-        if (res.status >= 400 && res.status < 500) {
-          throw new Error(`TfL ${res.status} for ${path}`);
-        }
-        lastErr = new Error(`TfL ${res.status} for ${path}`);
+        if (res.status >= 400 && res.status < 500) throw httpErr;
+        lastErr = httpErr; // 5xx: retry
       } catch (err) {
-        if (err instanceof Error && err.message.includes("TfL 4")) throw err;
+        if (err instanceof TflHttpError && err.status >= 400 && err.status < 500) {
+          throw err;
+        }
         lastErr = err;
       } finally {
         clearTimeout(timer);
