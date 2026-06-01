@@ -1,4 +1,5 @@
 import {
+  ANOMALY_THRESHOLDS,
   classifyAnomaly,
   type AnomalyBand,
   type LineSnapshot,
@@ -50,8 +51,8 @@ export function networkScore(
 
   let verdict: NetworkVerdict = "typical";
   if (crowdingAnomalyValue !== null) {
-    if (crowdingAnomalyValue >= 1.15) verdict = "busier_than_usual";
-    else if (crowdingAnomalyValue <= 0.85) verdict = "quieter_than_usual";
+    if (crowdingAnomalyValue >= ANOMALY_THRESHOLDS.busier) verdict = "busier_than_usual";
+    else if (crowdingAnomalyValue <= ANOMALY_THRESHOLDS.quieter) verdict = "quieter_than_usual";
   }
 
   return {

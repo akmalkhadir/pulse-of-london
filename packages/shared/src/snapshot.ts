@@ -46,6 +46,7 @@ export interface NetworkSummary {
   disruptedLineCount: number;
   verdict: NetworkVerdict;
   headline: string;
+  /** Names of SEVERE lines only (max 3). May be empty even when disruptedLineCount > 0 (minor-only disruptions). */
   worstLines: string[];
 }
 
