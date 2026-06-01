@@ -1,0 +1,9 @@
+{
+  "name": "@pulse/ingestor",
+  "version": "0.0.0",
+  "type": "module",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.654.0",
+    "@pulse/shared": "workspace:*"
+  }
+}
