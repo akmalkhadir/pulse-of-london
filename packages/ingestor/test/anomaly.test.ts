@@ -51,6 +51,39 @@ describe("networkScore", () => {
     expect(s.worstLines).toContain("Central");
     expect(s.headline).toMatch(/busier than usual/i);
   });
+
+  it("headline omits the worst-line suffix when disruptions are minor-only", () => {
+    const stations: StationSnapshot[] = [stub("a", ["circle"], 1.0)];
+    const lines: LineSnapshot[] = [
+      line("circle", "Circle", "minor", null),
+      line("victoria", "Victoria", "good", null),
+    ];
+    const s = networkScore(stations, lines, new Date("2026-05-30T17:10:00Z"));
+    expect(s.disruptedLineCount).toBe(1);
+    expect(s.worstLines).toEqual([]);
+    expect(s.headline).not.toMatch(/worst:/i);
+    expect(s.headline).toMatch(/1 line disrupted/);
+  });
+
+  it("worstLines is exactly the severe line names", () => {
+    const stations: StationSnapshot[] = [stub("a", ["central"], 1.6)];
+    const lines: LineSnapshot[] = [
+      line("victoria", "Victoria", "good", null),
+      line("central", "Central", "severe", 1.6),
+    ];
+    const s = networkScore(stations, lines, new Date("2026-05-30T17:10:00Z"));
+    expect(s.worstLines).toEqual(["Central"]);
+  });
+
+  it("verdict is typical and crowdingAnomaly null when no station has data", () => {
+    const stations: StationSnapshot[] = [
+      { naptan: "x", name: "X", lat: 0, lon: 0, lines: ["victoria"], live: null, typical: null, anomaly: null, anomalyBand: "unknown", dataAvailable: false },
+    ];
+    const lines: LineSnapshot[] = [line("victoria", "Victoria", "good", null)];
+    const s = networkScore(stations, lines, new Date("2026-05-30T17:10:00Z"));
+    expect(s.crowdingAnomaly).toBeNull();
+    expect(s.verdict).toBe("typical");
+  });
 });
 
 function stub(naptan: string, lines: string[], anomaly: number): StationSnapshot {
