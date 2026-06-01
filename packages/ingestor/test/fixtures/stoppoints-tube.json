@@ -1,0 +1,11 @@
+{
+  "stopPoints": [
+    {
+      "naptanId": "940GZZLUVIC",
+      "commonName": "Victoria Underground Station",
+      "lat": 51.496359,
+      "lon": -0.143686,
+      "lines": [{ "id": "circle" }, { "id": "district" }, { "id": "victoria" }]
+    }
+  ]
+}

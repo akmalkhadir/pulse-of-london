@@ -1,0 +1,8 @@
+{
+  "naptan": "940GZZLUVIC",
+  "dayOfWeek": "Sat",
+  "timeBands": [
+    { "timeBand": { "from": "18:00", "until": "18:15" }, "percentageOfBaseLine": 0.48 },
+    { "timeBand": { "from": "18:15", "until": "18:30" }, "percentageOfBaseLine": 0.51 }
+  ]
+}

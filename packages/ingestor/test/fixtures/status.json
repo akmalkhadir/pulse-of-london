@@ -1,0 +1,23 @@
+[
+  {
+    "id": "victoria",
+    "name": "Victoria",
+    "modeName": "tube",
+    "lineStatuses": [{ "statusSeverity": 10, "statusSeverityDescription": "Good Service" }]
+  },
+  {
+    "id": "central",
+    "name": "Central",
+    "modeName": "tube",
+    "lineStatuses": [
+      {
+        "statusSeverity": 6,
+        "statusSeverityDescription": "Severe Delays",
+        "disruption": {
+          "category": "RealTime",
+          "description": "Severe delays due to a signal failure at Liverpool Street."
+        }
+      }
+    ]
+  }
+]
