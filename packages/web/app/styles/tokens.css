@@ -1,1 +1,30 @@
-/* tokens (Task 8) */
+:root {
+  /* Elegant semantic palette */
+  --color-primary: #3b82f6;
+  --color-secondary: #8b5cf6;
+  --color-success: #16a34a;
+  --color-warning: #d97706;
+  --color-danger: #dc2626;
+  --color-surface: #ffffff;
+  --color-text: #111827;
+  --color-muted: #6b7280;
+  --color-border: #e5e7eb;
+
+  /* Dark map chrome */
+  --map-bg: #0b1120;
+  --map-water: #15233b;
+
+  /* Type */
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: "Anonymous Pro", ui-monospace, monospace;
+
+  /* Spacing (4px base) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  --radius: 12px;
+}
