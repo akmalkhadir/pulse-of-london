@@ -27,14 +27,17 @@ async function main(): Promise<void> {
   for (const line of lineMeta) {
     const seq = await client.getJson<RawSequence>(`/Line/${line.id}/Route/Sequence/all`);
     for (const ls of seq.lineStrings ?? []) {
-      const coords = JSON.parse(ls) as [number, number][];
-      // NOTE: TfL lineStrings are [lon, lat] (GeoJSON order). Verify once against a
-      // known station (Victoria ≈ [-0.1437, 51.4965]); if reversed, map to [c[1], c[0]].
-      features.push({
-        type: "Feature",
-        properties: { lineId: line.id, lineName: line.name },
-        geometry: { type: "LineString", coordinates: coords },
-      });
+      // Each TfL lineString parses to an ARRAY of linestrings (MultiLineString-style
+      // nesting: [[ [lon,lat], ... ], ...]) — verified against live data. Coordinates
+      // are [lon, lat] (GeoJSON order), confirmed e.g. Bakerloo ≈ [-0.3352, 51.5923].
+      const lineStrings = JSON.parse(ls) as [number, number][][];
+      for (const coords of lineStrings) {
+        features.push({
+          type: "Feature",
+          properties: { lineId: line.id, lineName: line.name },
+          geometry: { type: "LineString", coordinates: coords },
+        });
+      }
     }
   }
 

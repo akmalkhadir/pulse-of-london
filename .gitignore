@@ -3,5 +3,9 @@ dist/
 *.tsbuildinfo
 .env
 .env.*
+!.env.example
 .DS_Store
 coverage/
+
+# Bootstrap intermediate output (the served copy lives in packages/web/public/data/)
+/data/
