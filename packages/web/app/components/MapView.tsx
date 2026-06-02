@@ -53,6 +53,11 @@ export function MapView({ snapshot, onSelect }: { snapshot: Snapshot; onSelect: 
         },
       });
       mapRef.current = map;
+      // Remove the MapLibre canvas from the tab order so keyboard focus goes
+      // to the list controls first (WCAG 2.2 AA). The map container div already
+      // has role="img" + aria-label for screen readers; the ListView provides
+      // the full keyboard-navigable equivalent.
+      map.getCanvas().setAttribute("tabindex", "-1");
 
       map.on("load", async () => {
         if (cancelled) return;

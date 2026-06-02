@@ -1,2 +1,4 @@
 build/
 .react-router/
+playwright-report/
+test-results/
