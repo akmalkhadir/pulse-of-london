@@ -6,6 +6,13 @@
       "lat": 51.496359,
       "lon": -0.143686,
       "lines": [{ "id": "circle" }, { "id": "district" }, { "id": "victoria" }]
+    },
+    {
+      "naptanId": "9400ZZLUVIC1",
+      "commonName": "Victoria Underground Station Platform 1",
+      "lat": 51.4963,
+      "lon": -0.1437,
+      "lines": [{ "id": "victoria" }]
     }
   ]
 }

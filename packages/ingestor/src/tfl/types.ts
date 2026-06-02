@@ -17,7 +17,8 @@ export interface RawLiveCrowding {
 }
 
 export interface RawTypicalBand {
-  timeBand?: { from?: string; until?: string };
+  // TfL sends a "HH:MM-HH:MM" range string; older sample data used { from, until }.
+  timeBand?: string | { from?: string; until?: string };
   percentageOfBaseLine?: number; // note: TfL uses this casing
   percentageOfBaseline?: number; // defensive: accept both
 }

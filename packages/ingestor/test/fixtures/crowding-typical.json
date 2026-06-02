@@ -1,8 +1,10 @@
 {
   "naptan": "940GZZLUVIC",
-  "dayOfWeek": "Sat",
+  "dayOfWeek": "TUE",
+  "amPeakTimeBand": "08:15-10:15",
+  "pmPeakTimeBand": "17:30-19:30",
   "timeBands": [
-    { "timeBand": { "from": "18:00", "until": "18:15" }, "percentageOfBaseLine": 0.48 },
-    { "timeBand": { "from": "18:15", "until": "18:30" }, "percentageOfBaseLine": 0.51 }
+    { "timeBand": "18:00-18:15", "percentageOfBaseLine": 0.48 },
+    { "timeBand": "18:15-18:30", "percentageOfBaseLine": 0.51 }
   ]
 }

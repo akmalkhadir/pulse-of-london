@@ -78,23 +78,32 @@ export async function fetchTypical(
   naptan: string,
   dayOfWeek: string,
 ): Promise<TypicalBands> {
+  // dayOfWeek must be the 3-letter form ("Tue"); full names ("Tuesday") return 400.
   const raw = await client.getJson<RawTypical>(`/crowding/${naptan}/${dayOfWeek}`);
   const out: TypicalBands = {};
   for (const b of raw.timeBands ?? []) {
-    const from = b.timeBand?.from;
+    // TfL sends timeBand as a "HH:MM-HH:MM" range string; the band key is the start.
+    const from = typeof b.timeBand === "string" ? b.timeBand.split("-")[0] : b.timeBand?.from;
     const value = b.percentageOfBaseLine ?? b.percentageOfBaseline;
     if (from && typeof value === "number") out[from] = value;
   }
   return out;
 }
 
+// /StopPoint/Mode/tube returns ~1750 stop points including platforms, bus stops and
+// interchange hubs. Keep only station-level London Underground naptans (940GZZLU…) —
+// those are the ~270 real tube stations, and the only ones the crowding feed covers.
+const TUBE_STATION_NAPTAN = /^940GZZLU/;
+
 export async function fetchStations(client: TflClient): Promise<DomainStation[]> {
   const raw = await client.getJson<RawStopPointsResponse>(`/StopPoint/Mode/tube`);
-  return (raw.stopPoints ?? []).map((sp) => ({
-    naptan: sp.naptanId,
-    name: cleanName(sp.commonName),
-    lat: sp.lat,
-    lon: sp.lon,
-    lines: (sp.lines ?? []).map((l) => l.id),
-  }));
+  return (raw.stopPoints ?? [])
+    .filter((sp) => TUBE_STATION_NAPTAN.test(sp.naptanId))
+    .map((sp) => ({
+      naptan: sp.naptanId,
+      name: cleanName(sp.commonName),
+      lat: sp.lat,
+      lon: sp.lon,
+      lines: (sp.lines ?? []).map((l) => l.id),
+    }));
 }

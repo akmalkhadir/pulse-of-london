@@ -56,6 +56,7 @@ describe("fetchers", () => {
   it("parses stations with coords and line ids", async () => {
     const client = clientReturning(await fixture("stoppoints-tube.json"));
     const stations = await fetchStations(client);
+    expect(stations).toHaveLength(1); // 9400ZZLUVIC1 platform is filtered out (not 940GZZLU…)
     expect(stations[0]).toEqual({
       naptan: "940GZZLUVIC",
       name: "Victoria",
