@@ -31,4 +31,12 @@ describe("loadSnapshot", () => {
     const snap = await loadSnapshot({ SNAPSHOT_URL: "https://r2.example/snapshot.json" }, fetchFn);
     expect(snap).toEqual(sampleSnapshot);
   });
+
+  it("falls back to the sample when the fetch throws (network error)", async () => {
+    const fetchFn = vi.fn(async () => {
+      throw new TypeError("Failed to fetch");
+    });
+    const snap = await loadSnapshot({ SNAPSHOT_URL: "https://r2.example/snapshot.json" }, fetchFn);
+    expect(snap).toEqual(sampleSnapshot);
+  });
 });
