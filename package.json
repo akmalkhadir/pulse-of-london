@@ -2,7 +2,8 @@
   "name": "pulse-of-london",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=20" },
+  "packageManager": "pnpm@10.33.2",
+  "engines": { "node": ">=22" },
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
