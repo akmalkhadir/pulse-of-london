@@ -16,8 +16,10 @@ export function meta(_: Route.MetaArgs) {
   ];
 }
 
-export async function loader(_: Route.LoaderArgs) {
-  const snapshotUrl = process.env.SNAPSHOT_URL;
+export async function loader({ context }: Route.LoaderArgs) {
+  // On Cloudflare, env/bindings come from context.cloudflare.env (not process.env).
+  const env = (context as { cloudflare?: { env?: Record<string, string | undefined> } }).cloudflare?.env;
+  const snapshotUrl = env?.SNAPSHOT_URL;
   const snapshot = await loadSnapshot({ SNAPSHOT_URL: snapshotUrl });
   return { snapshot, snapshotUrl: snapshotUrl ?? null };
 }

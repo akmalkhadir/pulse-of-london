@@ -1,0 +1,12 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "pulse-of-london",
+  "compatibility_date": "2025-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": "./workers/app.ts",
+  "assets": { "directory": "./build/client" },
+  "observability": { "enabled": true }
+  // SNAPSHOT_URL is set as an environment variable in the Cloudflare dashboard
+  // (or via `wrangler deploy --var SNAPSHOT_URL:...`). Leaving it unset falls back
+  // to the bundled sample snapshot, so the app always renders.
+}
