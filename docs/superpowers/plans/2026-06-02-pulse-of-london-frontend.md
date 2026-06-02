@@ -527,8 +527,8 @@ export function describeAnomaly(band: AnomalyBand, ratio: number | null): string
 export function relativeAge(sec: number): string {
   if (sec < 10) return "just now";
   if (sec < 60) return `${sec}s ago`;
-  if (sec < 3600) return `${Math.round(sec / 60)} min ago`;
-  return `${Math.round(sec / 3600)} hr ago`;
+  if (sec < 3600) return `${Math.floor(sec / 60)} min ago`;
+  return `${Math.floor(sec / 3600)} hr ago`;
 }
 
 export interface Staleness {
