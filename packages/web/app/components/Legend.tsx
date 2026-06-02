@@ -5,6 +5,7 @@ const ITEMS: { band: keyof typeof BAND_COLORS; label: string }[] = [
   { band: "busier", label: "Busier than usual" },
   { band: "normal", label: "About normal" },
   { band: "quieter", label: "Quieter than usual" },
+  { band: "much_quieter", label: "Much quieter than usual" },
   { band: "unknown", label: "No live data" },
 ];
 
