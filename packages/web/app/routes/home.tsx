@@ -1,4 +1,5 @@
 import type { Route } from "./+types/home";
+import { loadSnapshot } from "../lib/snapshot-source";
 
 export function meta(_: Route.MetaArgs) {
   return [
@@ -7,6 +8,19 @@ export function meta(_: Route.MetaArgs) {
   ];
 }
 
-export default function Home(_: Route.ComponentProps) {
-  return <main>Pulse of London</main>;
+export async function loader(_: Route.LoaderArgs) {
+  const snapshotUrl = process.env.SNAPSHOT_URL;
+  const snapshot = await loadSnapshot({ SNAPSHOT_URL: snapshotUrl });
+  return { snapshot, snapshotUrl: snapshotUrl ?? null };
+}
+
+export default function Home({ loaderData }: Route.ComponentProps) {
+  return (
+    <main className="page">
+      <header className="page__header">
+        <h1>Pulse of London</h1>
+        <p className="mono">{loaderData.snapshot.network.headline}</p>
+      </header>
+    </main>
+  );
 }
