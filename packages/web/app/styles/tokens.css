@@ -1,6 +1,7 @@
 :root {
   /* Elegant semantic palette */
   --color-primary: #3b82f6;
+  --color-link: #1d4ed8; /* blue-700 — ≥4.5:1 on white surface (WCAG 1.4.3 AA) */
   --color-secondary: #8b5cf6;
   --color-success: #16a34a;
   --color-warning: #d97706;

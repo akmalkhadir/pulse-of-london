@@ -31,5 +31,5 @@ h2 { font-size: 24px; }
 
 table.list { width: 100%; border-collapse: collapse; font-size: 14px; }
 table.list th, table.list td { text-align: left; padding: var(--space-2); border-bottom: 1px solid var(--color-border); }
-table.list button { font: inherit; background: none; border: none; color: var(--color-primary); cursor: pointer; padding: 0; text-decoration: underline; }
+table.list button { font: inherit; background: none; border: none; color: var(--color-link); cursor: pointer; padding: 0; text-decoration: underline; }
 .swatch { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: var(--space-2); vertical-align: middle; }
