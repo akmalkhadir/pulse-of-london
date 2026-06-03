@@ -6,22 +6,21 @@ const POLL_MS = 30_000;
 const RECHECK_MS = 15_000;
 
 /**
- * Seeds from the SSR snapshot, then polls the public snapshot URL on the client
- * and re-checks staleness between polls. SSR-safe: effects run only in the browser.
+ * Seeds from the SSR snapshot, then polls the same-origin /api/snapshot proxy on
+ * the client and re-checks staleness between polls. SSR-safe: effects run only in
+ * the browser. The proxy avoids cross-origin CORS on the R2 snapshot URL.
  */
-export function useSnapshot(initial: Snapshot, snapshotUrl?: string) {
+export function useSnapshot(initial: Snapshot) {
   const [state, dispatch] = useReducer(reducePoll, {
     snapshot: initial,
     status: "fresh",
   } satisfies PollState);
 
   useEffect(() => {
-    // No live source (dev / fixture) → keep the SSR snapshot, don't poll.
-    if (!snapshotUrl) return;
     let active = true;
     const poll = async () => {
       try {
-        const res = await fetch(snapshotUrl, { headers: { accept: "application/json" } });
+        const res = await fetch("/api/snapshot", { headers: { accept: "application/json" } });
         if (!res.ok) throw new Error(`snapshot HTTP ${res.status}`);
         const snapshot = (await res.json()) as Snapshot;
         if (snapshot?.schemaVersion !== SCHEMA_VERSION) throw new Error("schema mismatch");
@@ -39,7 +38,7 @@ export function useSnapshot(initial: Snapshot, snapshotUrl?: string) {
       clearInterval(pollId);
       clearInterval(recheckId);
     };
-  }, [snapshotUrl]);
+  }, []);
 
   return state;
 }

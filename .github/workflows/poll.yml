@@ -2,7 +2,7 @@ name: Poll TfL → snapshot
 
 on:
   schedule:
-    - cron: "*/5 * * * *" # every 5 minutes (GitHub's minimum granularity)
+    - cron: "*/10 * * * *" # every 10 minutes (GitHub throttles tighter schedules; TfL crowding updates ~5 min)
   workflow_dispatch: {}
 
 concurrency:

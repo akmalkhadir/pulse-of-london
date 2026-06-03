@@ -19,13 +19,12 @@ export function meta(_: Route.MetaArgs) {
 export async function loader({ context }: Route.LoaderArgs) {
   // On Cloudflare, env/bindings come from context.cloudflare.env (not process.env).
   const env = (context as { cloudflare?: { env?: Record<string, string | undefined> } }).cloudflare?.env;
-  const snapshotUrl = env?.SNAPSHOT_URL;
-  const snapshot = await loadSnapshot({ SNAPSHOT_URL: snapshotUrl });
-  return { snapshot, snapshotUrl: snapshotUrl ?? null };
+  const snapshot = await loadSnapshot({ SNAPSHOT_URL: env?.SNAPSHOT_URL });
+  return { snapshot };
 }
 
 export default function Home({ loaderData }: Route.ComponentProps) {
-  const { snapshot, status } = useSnapshot(loaderData.snapshot, loaderData.snapshotUrl ?? undefined);
+  const { snapshot, status } = useSnapshot(loaderData.snapshot);
   const [selection, setSelection] = useState<Selection>(null);
   const now = new Date();
 
