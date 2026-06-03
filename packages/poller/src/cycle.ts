@@ -88,6 +88,9 @@ export async function runShardedCycle(deps: CycleDeps): Promise<CycleResult> {
   let fetchCount = 0;
 
   // 1. Station list (KV-cached, daily refresh). Sort for deterministic sharding.
+  //    The daily refresh fetch is unconditional (not budget-gated) — it happens
+  //    at most once per London day; the fetch budget guards only the per-tick
+  //    line-status + live-crowding calls below.
   const { stations: allStations, fetched } = await loadStations(deps, today);
   if (fetched) fetchCount++;
   const sorted = [...allStations].sort((a, b) => a.naptan.localeCompare(b.naptan));

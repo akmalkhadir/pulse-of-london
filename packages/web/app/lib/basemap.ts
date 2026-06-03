@@ -1,3 +1,6 @@
+// This module is imported ONLY via dynamic import() from MapView's client effect,
+// so @protomaps/basemaps (and the pmtiles import in registerPmtilesProtocol) ride
+// in a lazy client chunk and are never evaluated on the workerd SSR path.
 import { layers, namedFlavor } from "@protomaps/basemaps";
 import type { StyleSpecification } from "maplibre-gl";
 
@@ -28,6 +31,9 @@ export function basemapStyle(pmtilesUrl: string = BASEMAP_PMTILES_URL): StyleSpe
 /** Register the pmtiles:// protocol with MapLibre (call once, client-only). */
 export async function registerPmtilesProtocol(): Promise<void> {
   const { Protocol } = await import("pmtiles");
+  // maplibre-gl is a single bundler-deduped module, so this named `addProtocol`
+  // registers into the same global registry MapView's map instance reads from
+  // (MapView awaits its own maplibre-gl import before calling this, so no race).
   const { addProtocol } = await import("maplibre-gl");
   const protocol = new Protocol();
   addProtocol("pmtiles", protocol.tile);
