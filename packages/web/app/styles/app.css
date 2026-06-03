@@ -20,7 +20,11 @@ h2 { font-size: 24px; }
 .page__body { display: grid; grid-template-columns: 1fr; gap: var(--space-4); padding: var(--space-4); }
 @media (min-width: 900px) { .page__body { grid-template-columns: 2fr 1fr; } }
 
-.map { position: relative; min-height: 60vh; border-radius: var(--radius); overflow: hidden; background: var(--map-bg); }
+/* Bounded height + align-self:start so the map doesn't stretch to the (very tall)
+   list column in the 2fr/1fr grid. An unbounded canvas grows to the list height
+   (~16000px), which WebGL clamps to its ~4096px max and the browser upscales —
+   looking blurry. Sticky keeps the map in view while scrolling the list. */
+.map { position: sticky; top: var(--space-4); align-self: start; height: 70vh; border-radius: var(--radius); overflow: hidden; background: var(--map-bg); }
 /* MapLibre overrides position to relative when it mounts, which removes the
    inset-0 stretch. Set explicit width/height so the canvas fills the parent
    regardless of whether MapLibre has initialised. */
