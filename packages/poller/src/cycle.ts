@@ -47,17 +47,26 @@ interface CachedStations {
 /** Load the station list from KV, refreshing it (1 fetch) once per London day. */
 async function loadStations(deps: CycleDeps, today: string): Promise<{ stations: DomainStation[]; fetched: boolean }> {
   const raw = await deps.kv.get(STATIONS_KEY);
+  let stale: DomainStation[] | null = null;
   if (raw) {
     try {
       const parsed = JSON.parse(raw) as CachedStations;
       if (parsed.day === today && parsed.stations.length > 0) return { stations: parsed.stations, fetched: false };
+      if (parsed.stations.length > 0) stale = parsed.stations; // wrong-day list -> usable fallback
     } catch {
       // fall through to refetch
     }
   }
-  const stations = await deps.fetchStations();
-  await deps.kv.put(STATIONS_KEY, JSON.stringify({ day: today, stations } satisfies CachedStations));
-  return { stations, fetched: true };
+  try {
+    const stations = await deps.fetchStations();
+    await deps.kv.put(STATIONS_KEY, JSON.stringify({ day: today, stations } satisfies CachedStations));
+    return { stations, fetched: true };
+  } catch (err) {
+    // The station list changes a few times a year; rather than crash the whole
+    // tick when TfL is flaky at the daily refresh, serve yesterday's list.
+    if (stale) return { stations: stale, fetched: false };
+    throw err;
+  }
 }
 
 async function readPrevSnapshot(deps: CycleDeps): Promise<Snapshot | null> {
@@ -83,6 +92,18 @@ export async function runShardedCycle(deps: CycleDeps): Promise<CycleResult> {
   if (fetched) fetchCount++;
   const sorted = [...allStations].sort((a, b) => a.naptan.localeCompare(b.naptan));
 
+  // Guard: never overwrite a good snapshot with an empty one if the station list
+  // came back empty (e.g. a malformed TfL response). Keep the previous snapshot.
+  if (sorted.length === 0) {
+    const prev = await readPrevSnapshot(deps);
+    return {
+      snapshot: prev ?? buildSnapshot({ now, statusFetchedAt: now, crowdingFetchedAt: now, lines: [], stations: [] }),
+      shardCount: 0,
+      cursor: 0,
+      fetchCount,
+    };
+  }
+
   // 2. Shard selection from the KV cursor.
   const cursor = Number((await deps.kv.get(CURSOR_KEY)) ?? "0") || 0;
   const { shard, shardCount, cursor: usedCursor } = selectShard(sorted, cursor, deps.shardSize);
@@ -94,19 +115,25 @@ export async function runShardedCycle(deps: CycleDeps): Promise<CycleResult> {
     freshLines = await deps.fetchLineStatus(deps.modes).catch(() => []);
   }
 
-  // 4. Live crowding for the shard (1 fetch each, within budget).
+  // 4. Live crowding for the shard (1 fetch each, within budget). On a thrown
+  //    fetch we leave the station OUT of `fresh` so the merge carries its
+  //    previous value forward (rather than blanking it to "unknown" for ~7 min
+  //    until this shard comes round again). An explicit dataAvailable:false from
+  //    TfL is honoured as live:null.
   const fresh = new Map<string, FreshStation>();
   for (const st of shard) {
     if (fetchCount >= deps.fetchBudget) break;
     fetchCount++;
-    let live: number | null = null;
     try {
       const res = await deps.fetchLiveCrowding(st.naptan);
-      live = res.dataAvailable ? res.percentageOfBaseline : null;
+      fresh.set(st.naptan, {
+        naptan: st.naptan,
+        live: res.dataAvailable ? res.percentageOfBaseline : null,
+        typical: null,
+      });
     } catch {
-      live = null;
+      // transient failure -> carry previous value via merge (not added to fresh)
     }
-    fresh.set(st.naptan, { naptan: st.naptan, live, typical: null });
   }
 
   // 5. Typical baselines: KV hit is free; misses fetch within remaining budget.
@@ -129,6 +156,9 @@ export async function runShardedCycle(deps: CycleDeps): Promise<CycleResult> {
 
   // 6. Merge into the previous snapshot and write back.
   const prev = await readPrevSnapshot(deps);
+  // statusFetchedAt/crowdingFetchedAt = now by design: the snapshot's generatedAt
+  // is what the UI uses for freshness (schema v1). Per-station age is a non-goal
+  // (max staleness ~7 min) — see the design spec Part 1.
   const snapshot = buildSnapshot({
     now,
     statusFetchedAt: now,

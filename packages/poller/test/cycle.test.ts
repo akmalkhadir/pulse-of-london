@@ -91,19 +91,38 @@ describe("runShardedCycle", () => {
   it("never exceeds the fetch budget; extra baseline misses get null typical", async () => {
     const kv = fakeKv();
     const r2 = fakeR2();
+    // Pre-seed the station cache so the daily station-list fetch doesn't consume
+    // a budget unit -> the budget is exactly 1 status + 3 live = 4 (all polled).
+    kv.store.set("meta:stations", JSON.stringify({ day: "2026-06-03", stations: stationList }));
     let fetches = 0;
     const count = () => { fetches++; };
     const deps = makeDeps(kv, r2, {
-      shardSize: 3, // poll all 3 in one tick
-      fetchBudget: 4, // 1 status + 3 live = 4 -> zero budget left for baselines
+      shardSize: 3,
+      fetchBudget: 4,
       fetchLineStatus: vi.fn(async () => { count(); return []; }),
       fetchLiveCrowding: vi.fn(async (): Promise<DomainLive> => { count(); return { dataAvailable: true, percentageOfBaseline: 0.5 }; }),
       fetchTypical: vi.fn(async (): Promise<TypicalBands> => { count(); return { "09:00": 0.5 }; }),
     });
     const res = await runShardedCycle(deps);
+    expect(deps.fetchStations).not.toHaveBeenCalled(); // served from the seeded cache
     expect(fetches).toBeLessThanOrEqual(4);
-    expect(deps.fetchTypical).not.toHaveBeenCalled();
+    expect(res.snapshot.stations.every((s) => s.live === 0.5)).toBe(true); // all 3 polled
+    expect(deps.fetchTypical).not.toHaveBeenCalled(); // no budget left for baselines
     expect(res.snapshot.stations.every((s) => s.typical === null)).toBe(true);
+  });
+
+  it("serves the stale station list (no crash) when fetchStations throws on a new day", async () => {
+    const kv = fakeKv();
+    const r2 = fakeR2();
+    await runShardedCycle(makeDeps(kv, r2)); // tick 1 seeds meta:stations + snapshot
+    // Simulate the daily rollover: the stored list is now from "yesterday".
+    kv.store.set("meta:stations", JSON.stringify({ day: "2026-06-02", stations: stationList }));
+    const deps2 = makeDeps(kv, r2, {
+      fetchStations: vi.fn(async () => { throw new Error("TfL down"); }),
+    });
+    const res = await runShardedCycle(deps2);
+    expect(res.snapshot.stations).toHaveLength(3); // used the stale list, didn't crash
+    expect(r2.store.has("snapshot.json")).toBe(true);
   });
 
   it("keeps previous lines when the status fetch fails", async () => {
