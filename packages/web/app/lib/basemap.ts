@@ -25,11 +25,10 @@ export function basemapStyle(pmtilesUrl: string = BASEMAP_PMTILES_URL): StyleSpe
   };
 }
 
-/** Register the pmtiles:// protocol on a MapLibre instance (call once, client-only). */
-export async function registerPmtilesProtocol(
-  maplibregl: typeof import("maplibre-gl").default,
-): Promise<void> {
+/** Register the pmtiles:// protocol with MapLibre (call once, client-only). */
+export async function registerPmtilesProtocol(): Promise<void> {
   const { Protocol } = await import("pmtiles");
+  const { addProtocol } = await import("maplibre-gl");
   const protocol = new Protocol();
-  maplibregl.addProtocol("pmtiles", protocol.tile);
+  addProtocol("pmtiles", protocol.tile);
 }

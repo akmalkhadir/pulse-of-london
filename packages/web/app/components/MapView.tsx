@@ -39,18 +39,18 @@ export function MapView({ snapshot, onSelect }: { snapshot: Snapshot; onSelect: 
     (async () => {
       const maplibregl = (await import("maplibre-gl")).default;
       await import("maplibre-gl/dist/maplibre-gl.css");
+      const { basemapStyle, registerPmtilesProtocol } = await import("../lib/basemap");
+      if (cancelled || !containerRef.current) return;
+
+      await registerPmtilesProtocol();
       if (cancelled || !containerRef.current) return;
 
       const map = new maplibregl.Map({
         container: containerRef.current,
         center: LONDON,
         zoom: 11,
-        attributionControl: false,
-        style: {
-          version: 8,
-          sources: {},
-          layers: [{ id: "bg", type: "background", paint: { "background-color": "#0b1120" } }],
-        },
+        attributionControl: { compact: true },
+        style: basemapStyle(),
       });
       mapRef.current = map;
       // Remove the MapLibre canvas from the tab order so keyboard focus goes
@@ -67,6 +67,8 @@ export function MapView({ snapshot, onSelect }: { snapshot: Snapshot; onSelect: 
         const snap = snapshotRef.current;
 
         map.addSource("lines", { type: "geojson", data: colourLines(geometry, snap.lines) as GeoJSON.FeatureCollection });
+        // Dark casing under the coloured line so it reads over basemap streets.
+        map.addLayer({ id: "lines-casing", type: "line", source: "lines", paint: { "line-color": "#0b1120", "line-width": 5 } });
         map.addLayer({ id: "lines", type: "line", source: "lines", paint: { "line-color": ["get", "color"], "line-width": 3 } });
 
         map.addSource("stations", { type: "geojson", data: stationsToGeoJSON(snap.stations) as GeoJSON.FeatureCollection });
