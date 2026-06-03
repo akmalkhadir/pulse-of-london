@@ -83,12 +83,12 @@ Disable the scheduled trigger in `.github/workflows/poll.yml`, retaining `workfl
 
 ### Decisions
 
-- **Generate a Greater London PMTiles extract once:** Geofabrik Greater London `.osm.pbf` → Planetiler → `london.pmtiles`, via a one-off bootstrap script alongside the existing `bootstrap-geometry`. Upload to the **same R2 bucket** at `basemap/london.pmtiles`.
+- **Generate a Greater London PMTiles extract once:** use the `pmtiles extract` CLI to pull a Greater-London bounding box out of Protomaps' public **planet build** (`https://build.protomaps.com/<date>.pmtiles`) into `london.pmtiles`, then upload to the **same R2 bucket** at `basemap/london.pmtiles`. This is a manual, occasional op (documented in `docs/basemap.md`), not part of CI. **Schema matters:** `@protomaps/basemaps` styles the *Protomaps basemap schema*, so tiles must come from a Protomaps planet build — NOT a Planetiler/OpenMapTiles build, whose layer names differ. `pmtiles extract` reads the remote planet over HTTP range requests, so only the London region downloads (no full-planet fetch).
 - **Serve via HTTP range requests:** the browser uses the `pmtiles` JS library + MapLibre `maplibregl.addProtocol("pmtiles", …)`, reading the single `.pmtiles` directly from its R2 public URL. Only viewport tiles are fetched; R2 egress is free; no API key; no third-party tile ToS.
 
 ### Rendering changes (client-only, in `MapView`)
 
-- Replace the empty style with a **dark Protomaps theme** (`@protomaps/basemaps` dark style flavor) whose vector source points at the pmtiles `tiles://` source.
+- Replace the empty style with a **dark Protomaps theme** (`@protomaps/basemaps` dark flavor) whose vector source points at the `pmtiles://<r2-url>` source.
 - Keep the existing TfL `lines` and `stations` layers drawn on top; tune line casing/width and circle styling so status colours pop against the basemap.
 - `pmtiles` and the theme load through the same dynamic `import()` path as MapLibre (client-only) — no SSR impact; `public/data/geometry.geojson` is unchanged.
 - Map init currently sets `attributionControl: false`; we restore attribution (see below).
@@ -113,6 +113,6 @@ The basemap is OSM-derived (ODbL), so the UI must display **"© OpenStreetMap co
 This single design yields **two independent implementation plans**, each shippable on its own:
 
 1. **Poller migration** — `packages/poller` Worker, sharded `scheduled()` orchestrator, KV/R2 bindings, GitHub Actions decommission.
-2. **Self-hosted basemap** — PMTiles bootstrap + R2 upload, `MapView` Protomaps integration, attribution.
+2. **Self-hosted basemap** — `pmtiles extract` + R2 upload, `MapView` Protomaps integration, attribution.
 
 Both are created via the writing-plans skill after this spec is approved.
