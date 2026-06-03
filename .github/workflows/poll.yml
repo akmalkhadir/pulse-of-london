@@ -1,8 +1,9 @@
 name: Poll TfL → snapshot
 
 on:
-  schedule:
-    - cron: "*/10 * * * *" # every 10 minutes (GitHub throttles tighter schedules; TfL crowding updates ~5 min)
+  # Scheduled polling moved to the Cloudflare Cron Worker (@pulse/poller), which
+  # honours minute-level schedules (GitHub throttled */10 to ~90 min). Kept as a
+  # manual fallback / for re-bootstrapping the station list + geometry.
   workflow_dispatch: {}
 
 concurrency:
