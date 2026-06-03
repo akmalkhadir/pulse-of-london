@@ -28,6 +28,32 @@ manually a few times a year (OSM data drifts slowly):
    curl -s -r 0-99 -o /dev/null -w "%{http_code}\n" \
      https://pub-65d41e5468344746919009655cb3a516.r2.dev/basemap/london.pmtiles
    ```
+6. **CORS (required, one-time per bucket).** The browser fetches the pmtiles file
+   cross-origin (the site is on `…workers.dev`, the file on `…r2.dev`), so the
+   bucket needs a CORS rule allowing `GET` + the `Range` header from the site
+   origin. Without it the basemap fails with `No 'Access-Control-Allow-Origin'`.
+   Set it once with `cors.json`:
+   ```json
+   {
+     "rules": [
+       {
+         "allowed": {
+           "origins": ["https://pulse-of-london.akmal-a-khadir.workers.dev"],
+           "methods": ["GET"],
+           "headers": ["range"]
+         },
+         "exposeHeaders": ["content-length", "content-range", "etag", "accept-ranges"],
+         "maxAgeSeconds": 3600
+       }
+     ]
+   }
+   ```
+   ```
+   wrangler r2 bucket cors set pulse-of-london --file cors.json
+   ```
+   Verify: an `OPTIONS` preflight returns `204` with `Access-Control-Allow-Origin`,
+   and a ranged `GET` returns `206` with that header. (Add localhost origins here
+   if you want the basemap to render in local dev/preview too.)
 
 The browser reads this file directly via the `pmtiles://` protocol (registered
 in `packages/web/app/lib/basemap.ts`); only viewport tiles transfer, and R2

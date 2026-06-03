@@ -409,5 +409,5 @@ git commit -m "chore(web): verify + deploy self-hosted basemap"
 
 - **Schema match is the #1 pitfall:** `@protomaps/basemaps` only styles Protomaps-schema tiles. Task 2 Step 4 guards against accidentally using an OpenMapTiles/Planetiler build.
 - **SSR safety:** `pmtiles` and `@protomaps/basemaps` only ever load via dynamic `import()` inside the client effect, so the workerd SSR bundle never touches WebGL/browser-only code. The Vitest unit test runs `basemapStyle` in node, which is fine (pure JS).
-- **No CORS work:** the pmtiles file is read same-origin-style via range requests from the public R2 URL the browser already uses for snapshots; r2.dev serves ranges (206) without extra config.
+- **CORS IS required (correction — the original assumption here was wrong):** the pmtiles file is fetched *cross-origin* by the browser (site on `…workers.dev`, file on `…r2.dev`). r2.dev serves ranges (206) but sends no `Access-Control-Allow-Origin`, so the bucket needs a one-time CORS rule allowing `GET` + the `Range` header from the site origin. See `docs/basemap.md`. (The snapshot avoids this via the same-origin `/api/snapshot` proxy; the basemap can't be proxied as cheaply because every tile is a range request, so direct-from-R2 + CORS is the right call.)
 - **Cost:** R2 storage for ~tens of MB is pennies/month; egress is free. No API keys anywhere.
