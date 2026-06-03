@@ -1,0 +1,19 @@
+{
+  "name": "@pulse/poller",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev --test-scheduled",
+    "cf-typegen": "wrangler types"
+  },
+  "dependencies": {
+    "@pulse/ingestor": "workspace:*",
+    "@pulse/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260602.1",
+    "wrangler": "^4.96.0"
+  }
+}
