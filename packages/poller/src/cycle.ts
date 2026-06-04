@@ -111,57 +111,70 @@ export async function runShardedCycle(deps: CycleDeps): Promise<CycleResult> {
   const cursor = Number((await deps.kv.get(CURSOR_KEY)) ?? "0") || 0;
   const { shard, shardCount, cursor: usedCursor } = selectShard(sorted, cursor, deps.shardSize);
 
-  // 3. Line status (1 fetch); keep previous on failure.
-  let freshLines: DomainLineStatus[] = [];
-  if (fetchCount < deps.fetchBudget) {
-    fetchCount++;
-    freshLines = await deps.fetchLineStatus(deps.modes).catch(() => []);
-  }
+  // 3-5. Fan out all independent I/O concurrently. Doing this sequentially made
+  //      each tick ~24s of wall time (40 live fetches + 40 KV reads back-to-back)
+  //      and exhausted resource limits at peak; concurrency collapses it to a
+  //      couple of seconds. Line status, the previous snapshot (for the merge),
+  //      the shard's live crowding, and the shard's cached baselines are all
+  //      independent, so they run in one Promise.all.
+  const liveBudget = Math.max(0, deps.fetchBudget - fetchCount - 1); // reserve 1 for line status
+  const toPoll = shard.slice(0, liveBudget);
+  fetchCount += 1 + toPoll.length; // line status + live attempts
 
-  // 4. Live crowding for the shard (1 fetch each, within budget). On a thrown
-  //    fetch we leave the station OUT of `fresh` so the merge carries its
-  //    previous value forward (rather than blanking it to "unknown" for ~7 min
-  //    until this shard comes round again). An explicit dataAvailable:false from
-  //    TfL is honoured as live:null.
+  const [freshLines, prev, liveResults, cachedBaselines] = await Promise.all([
+    deps.fetchLineStatus(deps.modes).catch((): DomainLineStatus[] => []),
+    readPrevSnapshot(deps),
+    Promise.all(
+      toPoll.map(async (st) => {
+        try {
+          const res = await deps.fetchLiveCrowding(st.naptan);
+          // dataAvailable:false -> live:null (honest unknown). A thrown fetch
+          // returns null, so the merge carries the previous value forward
+          // instead of blanking the station until its shard comes round again.
+          return { naptan: st.naptan, live: res.dataAvailable ? res.percentageOfBaseline : null };
+        } catch {
+          return null;
+        }
+      }),
+    ),
+    Promise.all(toPoll.map((st) => readCachedTypical(deps.kv, st.naptan, weekday))),
+  ]);
+
   const fresh = new Map<string, FreshStation>();
-  for (const st of shard) {
-    if (fetchCount >= deps.fetchBudget) break;
-    fetchCount++;
-    try {
-      const res = await deps.fetchLiveCrowding(st.naptan);
-      fresh.set(st.naptan, {
-        naptan: st.naptan,
-        live: res.dataAvailable ? res.percentageOfBaseline : null,
-        typical: null,
-      });
-    } catch {
-      // transient failure -> carry previous value via merge (not added to fresh)
-    }
+  for (const r of liveResults) {
+    if (r) fresh.set(r.naptan, { naptan: r.naptan, live: r.live, typical: null });
   }
 
-  // 5. Typical baselines: KV hit is free; misses fetch within remaining budget.
-  for (const st of shard) {
+  // Apply cached baselines; collect misses for stations that have live data.
+  const misses: DomainStation[] = [];
+  toPoll.forEach((st, i) => {
     const entry = fresh.get(st.naptan);
-    if (!entry || entry.live === null) continue;
-    const cached = await readCachedTypical(deps.kv, st.naptan, weekday);
-    if (cached) {
-      entry.typical = cached[band] ?? null;
-      continue;
-    }
-    if (fetchCount >= deps.fetchBudget) continue; // out of budget -> warm later
-    fetchCount++;
-    const bands = await deps.fetchTypical(st.naptan, weekday).catch(() => null);
-    if (bands) {
+    if (!entry || entry.live === null) return;
+    const cached = cachedBaselines[i];
+    if (cached) entry.typical = cached[band] ?? null;
+    else misses.push(st);
+  });
+
+  // Fetch + cache the baseline misses concurrently, within the remaining budget.
+  const toFetch = misses.slice(0, Math.max(0, deps.fetchBudget - fetchCount));
+  fetchCount += toFetch.length;
+  const fetchedBands = await Promise.all(
+    toFetch.map(async (st) => {
+      const bands = await deps.fetchTypical(st.naptan, weekday).catch(() => null);
+      if (!bands) return null;
       await cacheTypical(deps.kv, st.naptan, weekday, bands, deps.typicalTtlSec);
-      entry.typical = bands[band] ?? null;
-    }
+      return { naptan: st.naptan, bands };
+    }),
+  );
+  for (const f of fetchedBands) {
+    if (!f) continue;
+    const entry = fresh.get(f.naptan);
+    if (entry) entry.typical = f.bands[band] ?? null;
   }
 
   // 6. Merge into the previous snapshot and write back.
-  const prev = await readPrevSnapshot(deps);
   // statusFetchedAt/crowdingFetchedAt = now by design: the snapshot's generatedAt
-  // is what the UI uses for freshness (schema v1). Per-station age is a non-goal
-  // (max staleness ~7 min) — see the design spec Part 1.
+  // is what the UI uses for freshness (schema v1). Per-station age is a non-goal.
   const snapshot = buildSnapshot({
     now,
     statusFetchedAt: now,
