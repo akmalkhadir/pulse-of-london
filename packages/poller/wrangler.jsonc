@@ -4,7 +4,11 @@
   "main": "./src/index.ts",
   "compatibility_date": "2026-05-01",
   "compatibility_flags": ["nodejs_compat"],
-  "triggers": { "crons": ["* * * * *"] },
+  // Every minute during 05:00–20:59 UTC only = ~06:00–22:00 London in BST; paused
+  // 22:00–06:00 London (trains aren't running / crowding data is dead overnight).
+  // NOTE: cron is UTC and not DST-aware — in GMT (winter) this maps to 05:00–21:00
+  // London, so bump the hour range to "6-21" if you want it exact through winter.
+  "triggers": { "crons": ["* 5-20 * * *"] },
   "kv_namespaces": [{ "binding": "PULSE_KV", "id": "21bf4dd679894a43ab5e875a2947e077" }],
   "r2_buckets": [{ "binding": "PULSE_BUCKET", "bucket_name": "pulse-of-london" }],
   "vars": { "SHARD_SIZE": "30", "FETCH_BUDGET": "50" },
