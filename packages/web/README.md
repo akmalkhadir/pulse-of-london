@@ -36,7 +36,9 @@ pnpm --filter @pulse/web exec wrangler deploy --var SNAPSHOT_URL:https://…/sna
 **B. Git integration (auto-deploy on push)**
 Cloudflare dashboard → Workers & Pages → Create → connect `akmalkhadir/pulse-of-london`. Root directory `packages/web`, build command `pnpm install && pnpm --filter @pulse/web build` (or let it auto-detect React Router), and add `SNAPSHOT_URL` as an environment variable.
 
-**No CORS config needed:** the browser polls the same-origin `/api/snapshot` route (the Worker fetches R2 server-side), so the R2 bucket needs no CORS policy.
+**Snapshot needs no CORS:** the browser polls the same-origin `/api/snapshot` route (the Worker fetches R2 server-side), so the snapshot path needs no R2 CORS policy.
+
+**Basemap DOES need bucket CORS:** the `pmtiles` library fetches `basemap/london.pmtiles` from the R2 public URL cross-origin, so the bucket needs a CORS rule allowing `GET` + the `Range` header from the site origin. See `docs/basemap.md`.
 
 Attribution and the "Unofficial — not affiliated with TfL" notice are rendered by `AttributionFooter` (TfL ToS §12).
 

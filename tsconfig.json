@@ -1,4 +1,8 @@
 {
   "files": [],
-  "references": [{ "path": "packages/shared" }, { "path": "packages/ingestor" }]
+  "references": [
+    { "path": "packages/shared" },
+    { "path": "packages/ingestor" },
+    { "path": "packages/poller" }
+  ]
 }

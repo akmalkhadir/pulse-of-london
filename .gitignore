@@ -10,3 +10,9 @@ coverage/
 
 # Bootstrap intermediate output (the served copy lives in packages/web/public/data/)
 /data/
+
+# Playwright MCP scratch output
+.playwright-mcp/
+
+# Brainstorming visual companion scratch
+.superpowers/

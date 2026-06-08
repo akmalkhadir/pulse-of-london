@@ -30,3 +30,14 @@ export function londonBand(d: Date): string {
   const banded = Math.floor(minute / 15) * 15;
   return `${String(hour).padStart(2, "0")}:${String(banded).padStart(2, "0")}`;
 }
+
+/** London-local calendar date as "YYYY-MM-DD" (for daily cache rollover). */
+export function londonDateKey(d: Date): string {
+  // en-CA renders ISO-style YYYY-MM-DD.
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/London",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(d);
+}
