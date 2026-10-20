@@ -6,8 +6,10 @@ Real-time London transport crowding and status dashboard.
 
 **Live data:** the `@pulse/poller` Cloudflare Cron Worker runs every minute
 (05:00–20:59 UTC), polling TfL in 30-station shards and merging each shard into
-`snapshot.json` in R2. The shard is picked from the cron's scheduled minute
-(round-robin, no stored cursor); typical baselines are KV-cached. The snapshot's
+`snapshot.json` in R2. The shard is picked from the run index (the cron's
+scheduled minute ÷ `TICK_MINUTES`; round-robin, no stored cursor), so if you
+slow the cron, set `TICK_MINUTES` in `wrangler.jsonc` to match or shards get
+skipped. Typical baselines are KV-cached. The snapshot's
 `generatedAt` stays under a minute old; each station refreshes ~every 9 minutes.
 The legacy `@pulse/ingestor` Node entrypoint (`pnpm ingest`) remains for
 local/manual runs, and `.github/workflows/poll.yml` is a manual

@@ -31,6 +31,7 @@ export default {
     const res = await runShardedCycle({
       now: () => new Date(),
       scheduledTime: event.scheduledTime,
+      tickMinutes: Number(env.TICK_MINUTES ?? "1") || 1,
       shardSize: Number(env.SHARD_SIZE ?? "40") || 40,
       fetchBudget: Number(env.FETCH_BUDGET ?? "50") || 50,
       typicalTtlSec: TYPICAL_TTL_SEC,

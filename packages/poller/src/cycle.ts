@@ -19,12 +19,18 @@ const STATIONS_KEY = "meta:stations";
 export interface CycleDeps {
   now: () => Date;
   /**
-   * Epoch ms of the cron's scheduled minute. The shard cursor is the minute
-   * index, so consecutive ticks walk the shards round-robin with no stored
-   * state — a per-tick KV cursor write alone used ~960 of the free tier's
-   * 1,000 writes/day.
+   * Epoch ms of the cron's scheduled minute. The shard cursor is the run index
+   * (scheduled minute ÷ tickMinutes), so consecutive runs walk the shards
+   * round-robin with no stored state — a per-tick KV cursor write alone used
+   * ~960 of the free tier's 1,000 writes/day.
    */
   scheduledTime: number;
+  /**
+   * Minutes between cron runs (TICK_MINUTES; must match the cron). Counting runs
+   * rather than minutes keeps every shard in rotation: with a 3-minute cron and
+   * a minute-based cursor, only every third shard would ever be polled.
+   */
+  tickMinutes: number;
   shardSize: number;
   fetchBudget: number;
   typicalTtlSec: number;
@@ -118,9 +124,9 @@ export async function runShardedCycle(deps: CycleDeps): Promise<CycleResult> {
     };
   }
 
-  // 2. Shard selection from the scheduled minute (selectShard mods it by shardCount).
-  const minuteIndex = Math.floor(deps.scheduledTime / 60_000);
-  const { shard, shardCount, cursor: usedCursor } = selectShard(sorted, minuteIndex, deps.shardSize);
+  // 2. Shard selection from the run index (selectShard mods it by shardCount).
+  const runIndex = Math.floor(deps.scheduledTime / (Math.max(1, deps.tickMinutes) * 60_000));
+  const { shard, shardCount, cursor: usedCursor } = selectShard(sorted, runIndex, deps.shardSize);
 
   // 3-5. Fan out all independent I/O concurrently. Doing this sequentially made
   //      each tick ~24s of wall time (40 live fetches + 40 KV reads back-to-back)

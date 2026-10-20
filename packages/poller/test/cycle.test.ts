@@ -41,6 +41,7 @@ function makeDeps(kv: KvLike, r2: R2Like, overrides: Partial<CycleDeps> = {}): C
   return {
     now: () => new Date("2026-06-03T08:05:00Z"), // Wed 09:05 BST → band 09:00, weekday Wed
     scheduledTime: minute(0), // cron minute 0 → shard 0
+    tickMinutes: 1,
     shardSize: 2,
     fetchBudget: 50,
     typicalTtlSec: 172800,
@@ -103,6 +104,14 @@ describe("runShardedCycle", () => {
     // A real cron timestamp (epoch ms, mid-minute) floors to its minute index.
     const real = makeDeps(kv, r2, { scheduledTime: Date.parse("2026-06-03T08:05:00Z") + 1_234 });
     expect((await runShardedCycle(real)).cursor).toBe(Math.floor(Date.parse("2026-06-03T08:05:00Z") / 60_000) % 2);
+  });
+
+  it("counts runs, not minutes, so a slower cron still walks every shard", async () => {
+    const six: DomainStation[] = ["A", "B", "C", "D", "E", "F"].map((n, i) => ({ naptan: n, name: n, lat: 51.5, lon: -0.1 - i / 100, lines: ["victoria"] }));
+    const cursorAt = async (n: number, tickMinutes: number) =>
+      (await runShardedCycle(makeDeps(fakeKv(), fakeR2(), { fetchStations: vi.fn(async () => six), scheduledTime: minute(n), tickMinutes }))).cursor;
+    // Cron every 3 minutes with 3 shards: by minute index alone, minutes 0/3/6 would all land on shard 0.
+    expect([await cursorAt(0, 3), await cursorAt(3, 3), await cursorAt(6, 3)]).toEqual([0, 1, 2]);
   });
 
   it("only writes KV for the daily station list and baseline misses (never per tick)", async () => {
