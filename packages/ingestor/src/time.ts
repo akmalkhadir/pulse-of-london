@@ -1,15 +1,26 @@
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
 
+// Built once per isolate: constructing a time-zoned Intl.DateTimeFormat is a
+// measurable CPU cost in a cold Worker, and these run several times per tick.
+const PARTS_FMT = new Intl.DateTimeFormat("en-GB", {
+  timeZone: "Europe/London",
+  weekday: "short",
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: false,
+});
+
+// en-CA renders ISO-style YYYY-MM-DD.
+const DATE_KEY_FMT = new Intl.DateTimeFormat("en-CA", {
+  timeZone: "Europe/London",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+});
+
 /** London-local parts of a Date, honouring BST/GMT via Intl. */
 function londonParts(d: Date): { weekday: string; hour: number; minute: number } {
-  const fmt = new Intl.DateTimeFormat("en-GB", {
-    timeZone: "Europe/London",
-    weekday: "short",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
-  const parts = fmt.formatToParts(d);
+  const parts = PARTS_FMT.formatToParts(d);
   const get = (t: string) => parts.find((p) => p.type === t)?.value ?? "";
   return {
     weekday: get("weekday"),
@@ -33,11 +44,5 @@ export function londonBand(d: Date): string {
 
 /** London-local calendar date as "YYYY-MM-DD" (for daily cache rollover). */
 export function londonDateKey(d: Date): string {
-  // en-CA renders ISO-style YYYY-MM-DD.
-  return new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Europe/London",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(d);
+  return DATE_KEY_FMT.format(d);
 }

@@ -13,6 +13,12 @@ function fakeKv(): KvLike & { store: Map<string, string> } {
   };
 }
 
+/** A KV whose writes always fail — e.g. the free-tier daily write limit was hit. */
+function fullKv(): KvLike & { store: Map<string, string> } {
+  const kv = fakeKv();
+  return { ...kv, put: async () => { throw new Error("KV put() limit exceeded for the day."); } };
+}
+
 function fakeR2(): R2Like & { store: Map<string, string> } {
   const store = new Map<string, string>();
   return {
@@ -28,9 +34,13 @@ const stationList: DomainStation[] = [
   { naptan: "C", name: "C", lat: 51.5, lon: -0.12, lines: ["victoria"] },
 ];
 
+/** Epoch ms of the n-th cron minute; the shard cursor is the minute index. */
+const minute = (n: number) => n * 60_000;
+
 function makeDeps(kv: KvLike, r2: R2Like, overrides: Partial<CycleDeps> = {}): CycleDeps {
   return {
     now: () => new Date("2026-06-03T08:05:00Z"), // Wed 09:05 BST → band 09:00, weekday Wed
+    scheduledTime: minute(0), // cron minute 0 → shard 0
     shardSize: 2,
     fetchBudget: 50,
     typicalTtlSec: 172800,
@@ -49,7 +59,7 @@ function makeDeps(kv: KvLike, r2: R2Like, overrides: Partial<CycleDeps> = {}): C
 }
 
 describe("runShardedCycle", () => {
-  it("tick 1: caches stations, polls shard 0, writes all stations, advances cursor", async () => {
+  it("tick 1: caches stations, polls shard 0, writes all stations, no cursor write", async () => {
     const kv = fakeKv();
     const r2 = fakeR2();
     const res = await runShardedCycle(makeDeps(kv, r2));
@@ -59,22 +69,63 @@ describe("runShardedCycle", () => {
     expect(snap.stations).toHaveLength(3); // ALL stations present from tick 1
     expect(snap.stations.find((s) => s.naptan === "A")!.live).toBe(0.9); // shard 0 polled
     expect(snap.stations.find((s) => s.naptan === "C")!.live).toBeNull(); // not yet polled
-    expect(kv.store.get("meta:cursor")).toBe("1");
+    expect(res.cursor).toBe(0);
+    expect(kv.store.has("meta:cursor")).toBe(false); // cursor is time-derived, never stored
     expect(kv.store.has("meta:stations")).toBe(true);
   });
 
   it("tick 2: reuses cached stations, polls shard 1, keeps shard 0's previous values", async () => {
     const kv = fakeKv();
     const r2 = fakeR2();
-    await runShardedCycle(makeDeps(kv, r2)); // tick 1 -> cursor 1
-    const deps2 = makeDeps(kv, r2);
-    await runShardedCycle(deps2); // tick 2 -> shard [C]
+    await runShardedCycle(makeDeps(kv, r2)); // minute 0 -> shard 0 [A, B]
+    const deps2 = makeDeps(kv, r2, { scheduledTime: minute(1) });
+    const res2 = await runShardedCycle(deps2); // minute 1 -> shard 1 [C]
 
     expect(deps2.fetchStations).not.toHaveBeenCalled(); // same London day -> cached
     const snap = JSON.parse(r2.store.get("snapshot.json")!) as Snapshot;
     expect(snap.stations.find((s) => s.naptan === "C")!.live).toBe(0.5); // now polled
     expect(snap.stations.find((s) => s.naptan === "A")!.live).toBe(0.9); // retained from tick 1
-    expect(kv.store.get("meta:cursor")).toBe("0"); // wrapped (2 shards)
+    expect(res2.cursor).toBe(1);
+  });
+
+  it("derives the shard from the scheduled minute and wraps around", async () => {
+    const kv = fakeKv();
+    const r2 = fakeR2();
+    const polled = async (n: number) => {
+      const deps = makeDeps(kv, r2, { scheduledTime: minute(n) });
+      const res = await runShardedCycle(deps);
+      const naptans = vi.mocked(deps.fetchLiveCrowding).mock.calls.map(([naptan]) => naptan);
+      return { cursor: res.cursor, naptans };
+    };
+    expect(await polled(0)).toEqual({ cursor: 0, naptans: ["A", "B"] });
+    expect(await polled(1)).toEqual({ cursor: 1, naptans: ["C"] });
+    expect(await polled(2)).toEqual({ cursor: 0, naptans: ["A", "B"] }); // 2 shards -> wraps
+    // A real cron timestamp (epoch ms, mid-minute) floors to its minute index.
+    const real = makeDeps(kv, r2, { scheduledTime: Date.parse("2026-06-03T08:05:00Z") + 1_234 });
+    expect((await runShardedCycle(real)).cursor).toBe(Math.floor(Date.parse("2026-06-03T08:05:00Z") / 60_000) % 2);
+  });
+
+  it("only writes KV for the daily station list and baseline misses (never per tick)", async () => {
+    const kv = fakeKv();
+    const r2 = fakeR2();
+    const put = vi.spyOn(kv, "put");
+    await runShardedCycle(makeDeps(kv, r2)); // minute 0: station list + 2 baseline misses
+    expect(put).toHaveBeenCalledTimes(3);
+    put.mockClear();
+    await runShardedCycle(makeDeps(kv, r2)); // same shard again: everything cached
+    expect(put).not.toHaveBeenCalled();
+  });
+
+  it("still writes the snapshot when every KV write fails (daily write limit hit)", async () => {
+    const kv = fullKv();
+    const r2 = fakeR2();
+    const deps = makeDeps(kv, r2);
+    const res = await runShardedCycle(deps);
+    expect(r2.store.has("snapshot.json")).toBe(true);
+    expect(res.snapshot.stations).toHaveLength(3); // fresh station list used despite the failed cache write
+    const a = res.snapshot.stations.find((s) => s.naptan === "A")!;
+    expect(a.live).toBe(0.9);
+    expect(a.typical).toBe(0.5); // fetched baseline applied even though caching it failed
   });
 
   it("caches typical baselines so fetchTypical runs once per (naptan, weekday)", async () => {
@@ -83,9 +134,12 @@ describe("runShardedCycle", () => {
     const deps = makeDeps(kv, r2);
     await runShardedCycle(deps); // shard 0 = [A, B]
     expect(deps.fetchTypical).toHaveBeenCalledTimes(2); // A and B missed -> fetched
-    const deps2 = makeDeps(kv, r2);
+    const deps2 = makeDeps(kv, r2, { scheduledTime: minute(1) });
     await runShardedCycle(deps2); // shard 1 = [C]
-    expect(deps2.fetchTypical).toHaveBeenCalledTimes(1); // only C; A/B served from KV next time
+    expect(deps2.fetchTypical).toHaveBeenCalledTimes(1); // only C
+    const deps3 = makeDeps(kv, r2, { scheduledTime: minute(2) });
+    await runShardedCycle(deps3); // shard 0 again = [A, B]
+    expect(deps3.fetchTypical).not.toHaveBeenCalled(); // A/B served from KV
   });
 
   it("never exceeds the fetch budget; extra baseline misses get null typical", async () => {
