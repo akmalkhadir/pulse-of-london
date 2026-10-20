@@ -16,6 +16,7 @@ export interface Env {
   PULSE_BUCKET: R2Bucket;
   SNAPSHOT_KEY?: string;
   SHARD_SIZE?: string;
+  TICK_MINUTES?: string;
   FETCH_BUDGET?: string;
   TFL_MODES?: string;
 }

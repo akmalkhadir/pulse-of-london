@@ -14,11 +14,23 @@ import { selectShard } from "./shard";
 import { mergeStationInputs, linesInput, type FreshStation } from "./merge";
 import { readCachedTypical, cacheTypical } from "./baseline";
 
-const CURSOR_KEY = "meta:cursor";
 const STATIONS_KEY = "meta:stations";
 
 export interface CycleDeps {
   now: () => Date;
+  /**
+   * Epoch ms of the cron's scheduled minute. The shard cursor is the run index
+   * (scheduled minute ÷ tickMinutes), so consecutive runs walk the shards
+   * round-robin with no stored state — a per-tick KV cursor write alone used
+   * ~960 of the free tier's 1,000 writes/day.
+   */
+  scheduledTime: number;
+  /**
+   * Minutes between cron runs (TICK_MINUTES; must match the cron). Counting runs
+   * rather than minutes keeps every shard in rotation: with a 3-minute cron and
+   * a minute-based cursor, only every third shard would ever be polled.
+   */
+  tickMinutes: number;
   shardSize: number;
   fetchBudget: number;
   typicalTtlSec: number;
@@ -57,16 +69,21 @@ async function loadStations(deps: CycleDeps, today: string): Promise<{ stations:
       // fall through to refetch
     }
   }
+  let stations: DomainStation[];
   try {
-    const stations = await deps.fetchStations();
-    await deps.kv.put(STATIONS_KEY, JSON.stringify({ day: today, stations } satisfies CachedStations));
-    return { stations, fetched: true };
+    stations = await deps.fetchStations();
   } catch (err) {
     // The station list changes a few times a year; rather than crash the whole
     // tick when TfL is flaky at the daily refresh, serve yesterday's list.
     if (stale) return { stations: stale, fetched: false };
     throw err;
   }
+  // A failed cache write (e.g. the daily KV write limit) costs only a refetch
+  // next tick; the list we just fetched is still good for this one.
+  await deps.kv
+    .put(STATIONS_KEY, JSON.stringify({ day: today, stations } satisfies CachedStations))
+    .catch((err) => console.warn(`station list cache write failed: ${String(err)}`));
+  return { stations, fetched: true };
 }
 
 async function readPrevSnapshot(deps: CycleDeps): Promise<Snapshot | null> {
@@ -107,9 +124,9 @@ export async function runShardedCycle(deps: CycleDeps): Promise<CycleResult> {
     };
   }
 
-  // 2. Shard selection from the KV cursor.
-  const cursor = Number((await deps.kv.get(CURSOR_KEY)) ?? "0") || 0;
-  const { shard, shardCount, cursor: usedCursor } = selectShard(sorted, cursor, deps.shardSize);
+  // 2. Shard selection from the run index (selectShard mods it by shardCount).
+  const runIndex = Math.floor(deps.scheduledTime / (Math.max(1, deps.tickMinutes) * 60_000));
+  const { shard, shardCount, cursor: usedCursor } = selectShard(sorted, runIndex, deps.shardSize);
 
   // 3-5. Fan out all independent I/O concurrently. Doing this sequentially made
   //      each tick ~24s of wall time (40 live fetches + 40 KV reads back-to-back)
@@ -162,7 +179,11 @@ export async function runShardedCycle(deps: CycleDeps): Promise<CycleResult> {
     toFetch.map(async (st) => {
       const bands = await deps.fetchTypical(st.naptan, weekday).catch(() => null);
       if (!bands) return null;
-      await cacheTypical(deps.kv, st.naptan, weekday, bands, deps.typicalTtlSec);
+      // Never let a failed cache write (e.g. the daily KV write limit) reject the
+      // tick: use the bands now and refetch next time this shard comes round.
+      await cacheTypical(deps.kv, st.naptan, weekday, bands, deps.typicalTtlSec).catch((err) =>
+        console.warn(`typical cache write failed for ${st.naptan}: ${String(err)}`),
+      );
       return { naptan: st.naptan, bands };
     }),
   );
@@ -184,7 +205,6 @@ export async function runShardedCycle(deps: CycleDeps): Promise<CycleResult> {
   });
 
   await deps.r2.put(deps.snapshotKey, JSON.stringify(snapshot));
-  await deps.kv.put(CURSOR_KEY, String(shardCount === 0 ? 0 : (usedCursor + 1) % shardCount));
 
   return { snapshot, shardCount, cursor: usedCursor, fetchCount };
 }

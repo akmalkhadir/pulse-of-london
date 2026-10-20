@@ -6,7 +6,7 @@ const DEFAULT_MODES = "tube,overground,elizabeth-line,dlr,tram";
 const TYPICAL_TTL_SEC = 172_800; // 48h
 
 export default {
-  async scheduled(_event: ScheduledEvent, env: Env, _ctx: ExecutionContext): Promise<void> {
+  async scheduled(event: ScheduledEvent, env: Env, _ctx: ExecutionContext): Promise<void> {
     // retries: 0 — each TfL retry is a real Cloudflare subrequest; a retry storm
     // could blow the 50-subrequest/invocation free-tier cap. The next tick recovers.
     const client = new TflClient({ appKey: env.TFL_APP_KEY, retries: 0 });
@@ -30,6 +30,8 @@ export default {
 
     const res = await runShardedCycle({
       now: () => new Date(),
+      scheduledTime: event.scheduledTime,
+      tickMinutes: Number(env.TICK_MINUTES ?? "1") || 1,
       shardSize: Number(env.SHARD_SIZE ?? "40") || 40,
       fetchBudget: Number(env.FETCH_BUDGET ?? "50") || 50,
       typicalTtlSec: TYPICAL_TTL_SEC,

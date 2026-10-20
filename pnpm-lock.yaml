@@ -50,9 +50,6 @@ importers:
 
   packages/web:
     dependencies:
-      '@protomaps/basemaps':
-        specifier: ^5.7.2
-        version: 5.7.2
       '@pulse/shared':
         specifier: workspace:*
         version: link:../shared
@@ -1113,10 +1110,6 @@ packages:
 
   '@poppinss/exception@1.2.3':
     resolution: {integrity: sha512-dCED+QRChTVatE9ibtoaxc+WkdzOSjYTKi/+uacHWIsfodVfpsueo3+DKpgU5Px8qXjgmXkSvhXvSCz3fnP9lw==}
-
-  '@protomaps/basemaps@5.7.2':
-    resolution: {integrity: sha512-K1Yk6bWdULulYg+R2QRVXx4NzJZan5YQhpejEG0c1/sXruJrfPIPZuakpf3jwAgVmjIRVQwAv+yRafDeN0aaUQ==}
-    hasBin: true
 
   '@react-router/dev@7.16.0':
     resolution: {integrity: sha512-E/uNYnHbo+wepw+FudGwuN6au6y4dOfVuRRANYdCp5T+tLvGU/09s2uGzNQsxqushyae9wvWTLY0qMvvgowIyg==}
@@ -2291,6 +2284,7 @@ packages:
   tsconfck@3.1.6:
     resolution: {integrity: sha512-ks6Vjr/jEw0P1gmOVwutM3B7fWxoWBL2KRDb1JfqGVawBmO5UsvmWOQFGHBPl5yxYz4eERr19E6L7NMv+Fej4w==}
     engines: {node: ^18 || >=20}
+    deprecated: unmaintained
     hasBin: true
     peerDependencies:
       typescript: ^5.0.0
@@ -3436,8 +3430,6 @@ snapshots:
       supports-color: 10.2.2
 
   '@poppinss/exception@1.2.3': {}
-
-  '@protomaps/basemaps@5.7.2': {}
 
   '@react-router/dev@7.16.0(@react-router/serve@7.16.0(react-router@7.16.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(typescript@5.9.3))(@types/node@22.19.19)(lightningcss@1.32.0)(react-router@7.16.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(typescript@5.9.3)(vite@8.0.16(@types/node@22.19.19)(esbuild@0.28.0)(tsx@4.22.3))(wrangler@4.96.0(@cloudflare/workers-types@4.20260602.1))':
     dependencies:

@@ -34,6 +34,17 @@ describe("fetchers", () => {
     expect(victoria.disruptions).toEqual([]);
   });
 
+  it("requests line status without detail=true (same fields, ~16x smaller payload)", async () => {
+    const fetchFn = vi.fn(async (_url: string | URL | Request) =>
+      new Response(await fixture("status.json"), { status: 200, headers: { "content-type": "application/json" } }),
+    );
+    const client = new TflClient({ appKey: "k", fetchFn });
+    await fetchLineStatus(client, ["tube", "dlr"]);
+    const url = new URL(String(fetchFn.mock.calls[0]![0]));
+    expect(url.pathname).toBe("/Line/Mode/tube,dlr/Status");
+    expect(url.searchParams.has("detail")).toBe(false);
+  });
+
   it("parses live crowding", async () => {
     const client = clientReturning(await fixture("crowding-live.json"));
     const live = await fetchLiveCrowding(client, "940GZZLUVIC");

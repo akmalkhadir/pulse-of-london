@@ -39,9 +39,9 @@ export async function fetchLineStatus(
   client: TflClient,
   modes: string[],
 ): Promise<DomainLineStatus[]> {
-  const raw = await client.getJson<RawLine[]>(`/Line/Mode/${modes.join(",")}/Status`, {
-    detail: "true",
-  });
+  // No detail=true: it adds affectedRoutes/affectedStops (~310 KB vs ~19 KB) we
+  // never read; disruption category + description are present either way.
+  const raw = await client.getJson<RawLine[]>(`/Line/Mode/${modes.join(",")}/Status`);
   return raw.map((line) => {
     // Pick the worst lineStatus (lowest severity number = worst).
     const worst = (line.lineStatuses ?? [])

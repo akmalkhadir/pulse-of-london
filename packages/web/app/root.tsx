@@ -4,17 +4,14 @@ import "./styles/tokens.css";
 import "./styles/app.css";
 
 export const links: Route.LinksFunction = () => [
-  { rel: "preconnect", href: "https://fonts.googleapis.com" },
-  { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-  {
-    rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Inter:wght@100..600&family=Anonymous+Pro&display=swap",
-  },
+  { rel: "preload", href: "/fonts/doto-latin-wght.woff2", as: "font", type: "font/woff2", crossOrigin: "anonymous" },
+  { rel: "preload", href: "/fonts/atkinson-hyperlegible-next-latin-wght.woff2", as: "font", type: "font/woff2", crossOrigin: "anonymous" },
+  { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en-GB">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -42,8 +39,8 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
       : "Unknown error";
   return (
     <main className="error">
-      <h1>Something went wrong</h1>
-      <p>{message}</p>
+      <h1 className="led">Service suspended</h1>
+      <p>Something went wrong loading the board ({message}). Try refreshing the page.</p>
     </main>
   );
 }

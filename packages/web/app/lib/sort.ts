@@ -13,3 +13,7 @@ export function sortLinesWorstFirst(lines: LineSnapshot[]): LineSnapshot[] {
 export function sortStationsWorstFirst(stations: StationSnapshot[]): StationSnapshot[] {
   return [...stations].sort((a, b) => (b.anomaly ?? -Infinity) - (a.anomaly ?? -Infinity));
 }
+
+export function sortStationsQuietestFirst(stations: StationSnapshot[]): StationSnapshot[] {
+  return [...stations].sort((a, b) => (a.anomaly ?? Infinity) - (b.anomaly ?? Infinity));
+}
