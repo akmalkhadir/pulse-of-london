@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { sortLinesWorstFirst, sortStationsWorstFirst } from "../app/lib/sort";
+import { sortLinesWorstFirst, sortStationsWorstFirst, sortStationsQuietestFirst } from "../app/lib/sort";
 import type { LineSnapshot, StationSnapshot } from "@pulse/shared";
 
 const line = (id: string, level: LineSnapshot["statusLevel"], crowd: number | null): LineSnapshot => ({
@@ -32,5 +32,16 @@ describe("sortStationsWorstFirst", () => {
     });
     const out = sortStationsWorstFirst([st("a", 1.2), st("b", null), st("c", 1.9)]);
     expect(out.map((s) => s.naptan)).toEqual(["c", "a", "b"]);
+  });
+});
+
+describe("sortStationsQuietestFirst", () => {
+  it("orders by anomaly asc, nulls last", () => {
+    const st = (naptan: string, anomaly: number | null): StationSnapshot => ({
+      naptan, name: naptan, lat: 0, lon: 0, lines: [], live: null, typical: null,
+      anomaly, anomalyBand: anomaly === null ? "unknown" : "quieter", dataAvailable: anomaly !== null,
+    });
+    const out = sortStationsQuietestFirst([st("a", 0.8), st("b", null), st("c", 0.4), st("d", 1.3)]);
+    expect(out.map((s) => s.naptan)).toEqual(["c", "a", "d", "b"]);
   });
 });

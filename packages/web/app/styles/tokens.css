@@ -1,31 +1,85 @@
-:root {
-  /* Elegant semantic palette */
-  --color-primary: #3b82f6;
-  --color-link: #1d4ed8; /* blue-700 — ≥4.5:1 on white surface (WCAG 1.4.3 AA) */
-  --color-secondary: #8b5cf6;
-  --color-success: #16a34a;
-  --color-warning: #d97706;
-  --color-danger: #dc2626;
-  --color-surface: #ffffff;
-  --color-text: #111827;
-  --color-muted: #6b7280;
-  --color-border: #e5e7eb;
+/* Self-hosted (OFL) latin subsets, preloaded in root.tsx so the LED verdict never paints in a system mono. */
+@font-face {
+  font-family: "Doto";
+  font-style: normal;
+  font-weight: 600 900;
+  font-display: swap;
+  src: url("/fonts/doto-latin-wght.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/fonts/atkinson-hyperlegible-next-latin-wght.woff2") format("woff2");
+}
 
-  /* Dark map chrome */
-  --map-bg: #0b1120;
-  --map-water: #15233b;
+:root {
+  color-scheme: dark;
+
+  /* Board housing: the black enclosure and its frame seams */
+  --housing: #0b0c0e;
+  --panel: #111317;
+  --panel-raised: #171a1f;
+  --seam: #23262c;
+  --seam-strong: #33373e;
+
+  /* LED glyphs: board copy and "TfL says" line alerts only, never crowding */
+  --led: #ffb020;
+  --led-dim: #c48c2c;
+  --led-bloom: rgb(255 176 32 / 0.32);
+
+  /* Good-service lines on the map: dim strokes (keep in sync with lib/colors.ts) */
+  --line-good: #454b54;
+
+  /* Prose on the housing */
+  --ink: #ece6da;
+  --ink-2: #aba498;
+  --ink-3: #8d877c;
+
+  /* Selection: the board's own inversion, plus the map corridor */
+  --select-ground: var(--led);
+  --select-ink: #0b0c0e;
+  --corridor: #f5f1e6;
+
+  /* Crowding vs a typical day: red is busier, blue is quieter (keep in sync with lib/colors.ts) */
+  --band-much-busier: #ff4d5e;
+  --band-busier: #f0929b;
+  --band-normal: #8a9099;
+  --band-quieter: #86b9ea;
+  --band-much-quieter: #3e9bff;
+  --band-unknown: #6b7079;
 
   /* Type */
-  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
-  --font-mono: "Anonymous Pro", ui-monospace, monospace;
+  --font-led: "Doto", ui-monospace, monospace;
+  --font-sans: "Atkinson Hyperlegible Next", system-ui, -apple-system, "Segoe UI", sans-serif;
 
-  /* Spacing (4px base) */
+  /* LED type sits on whole steps only */
+  --led-xs: 1rem;
+  --led-sm: 1.25rem;
+  --led-md: 1.5rem;
+  --led-lg: 2.5rem;
+  --led-xl: 3.5rem;
+
+  /* Prose scale (fixed rem, ~1.2 ratio) */
+  --text-xs: 0.8125rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.125rem;
+
+  /* One board module: rows, gutters and seams all step in 8px */
+  --unit: 8px;
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
   --space-4: 16px;
-  --space-6: 24px;
-  --space-8: 32px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-8: 48px;
+  --row: 48px;
 
-  --radius: 12px;
+  --radius: 2px;
+  --column: 460px;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }

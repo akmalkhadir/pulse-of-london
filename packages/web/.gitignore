@@ -3,3 +3,7 @@ build/
 .wrangler/
 playwright-report/
 test-results/
+
+# Impeccable scratch (review captures, decision-page logs); the surface brief in .impeccable/surfaces is kept
+.impeccable/review/
+.impeccable/questions/

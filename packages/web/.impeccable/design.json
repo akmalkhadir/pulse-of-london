@@ -1,0 +1,679 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-20T09:38:06Z",
+  "title": "Design System: Pulse of London",
+  "extensions": {
+    "colorMeta": {
+      "housing": {
+        "role": "neutral",
+        "displayName": "Housing Black",
+        "canonical": "oklch(15.4% 0.005 264)",
+        "tonalRamp": [
+          "#0a0b0d",
+          "#242527",
+          "#414244",
+          "#606164",
+          "#818285",
+          "#a3a5a8",
+          "#c7c9cc",
+          "#edeef2"
+        ]
+      },
+      "panel": {
+        "role": "neutral",
+        "displayName": "Panel",
+        "canonical": "oklch(18.6% 0.009 264)",
+        "tonalRamp": [
+          "#090b0f",
+          "#232529",
+          "#404247",
+          "#5f6166",
+          "#808288",
+          "#a2a5ab",
+          "#c6c9cf",
+          "#ebeef5"
+        ]
+      },
+      "panel-raised": {
+        "role": "neutral",
+        "displayName": "Panel Raised",
+        "canonical": "oklch(21.7% 0.011 261)",
+        "tonalRamp": [
+          "#090b10",
+          "#22252a",
+          "#3f4248",
+          "#5e6168",
+          "#7f8389",
+          "#a1a5ac",
+          "#c5c9d0",
+          "#eaeff6"
+        ]
+      },
+      "seam": {
+        "role": "neutral",
+        "displayName": "Seam",
+        "canonical": "oklch(26.8% 0.012 264)",
+        "tonalRamp": [
+          "#090b10",
+          "#22252b",
+          "#3f4249",
+          "#5e6168",
+          "#7f828a",
+          "#a1a5ad",
+          "#c5c9d1",
+          "#eaeff7"
+        ]
+      },
+      "seam-strong": {
+        "role": "neutral",
+        "displayName": "Seam Strong",
+        "canonical": "oklch(33.6% 0.013 262)",
+        "tonalRamp": [
+          "#080b11",
+          "#21252c",
+          "#3e4249",
+          "#5d6169",
+          "#7e838b",
+          "#a0a5ae",
+          "#c4c9d2",
+          "#eaeff8"
+        ]
+      },
+      "led": {
+        "role": "primary",
+        "displayName": "Platform Amber",
+        "canonical": "oklch(81.3% 0.165 75)",
+        "tonalRamp": [
+          "#240000",
+          "#441500",
+          "#653400",
+          "#885500",
+          "#ac761a",
+          "#d19945",
+          "#f7be6b",
+          "#ffe390"
+        ]
+      },
+      "led-dim": {
+        "role": "primary",
+        "displayName": "Dimmed Amber",
+        "canonical": "oklch(67.9% 0.127 76)",
+        "tonalRamp": [
+          "#240000",
+          "#441500",
+          "#653500",
+          "#875500",
+          "#ab7718",
+          "#d09a45",
+          "#f6be6a",
+          "#ffe48f"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Warm Ink",
+        "canonical": "oklch(92.6% 0.017 85)",
+        "tonalRamp": [
+          "#0f0b04",
+          "#29241c",
+          "#464138",
+          "#666156",
+          "#878277",
+          "#aaa499",
+          "#cec8bd",
+          "#f4eee2"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Ink 2",
+        "canonical": "oklch(72.1% 0.019 81)",
+        "tonalRamp": [
+          "#0f0a04",
+          "#2a241b",
+          "#474137",
+          "#676055",
+          "#888176",
+          "#aba498",
+          "#cfc8bc",
+          "#f5eee1"
+        ]
+      },
+      "ink-3": {
+        "role": "neutral",
+        "displayName": "Ink 3",
+        "canonical": "oklch(62.5% 0.018 83)",
+        "tonalRamp": [
+          "#0f0a04",
+          "#29241b",
+          "#474137",
+          "#666056",
+          "#888277",
+          "#aaa499",
+          "#cfc8bd",
+          "#f4eee2"
+        ]
+      },
+      "select-ink": {
+        "role": "tertiary",
+        "displayName": "Select Ink",
+        "canonical": "oklch(15.4% 0.005 264)",
+        "tonalRamp": [
+          "#0a0b0d",
+          "#242527",
+          "#414244",
+          "#606164",
+          "#818285",
+          "#a3a5a8",
+          "#c7c9cc",
+          "#edeef2"
+        ]
+      },
+      "corridor": {
+        "role": "tertiary",
+        "displayName": "Corridor White",
+        "canonical": "oklch(95.8% 0.015 90)",
+        "tonalRamp": [
+          "#0e0b05",
+          "#28251d",
+          "#454239",
+          "#646158",
+          "#868278",
+          "#a9a59b",
+          "#cdc9be",
+          "#f2eee3"
+        ]
+      },
+      "band-much-busier": {
+        "role": "secondary",
+        "displayName": "Signal Red",
+        "canonical": "oklch(67.6% 0.213 20)",
+        "tonalRamp": [
+          "#2d0000",
+          "#50000a",
+          "#751e26",
+          "#9a4044",
+          "#c06264",
+          "#e68586",
+          "#ffa9a9",
+          "#ffcecd"
+        ]
+      },
+      "band-busier": {
+        "role": "secondary",
+        "displayName": "Pale Rose",
+        "canonical": "oklch(76.0% 0.114 14)",
+        "tonalRamp": [
+          "#2b0000",
+          "#4e0013",
+          "#72202f",
+          "#97424d",
+          "#bc646d",
+          "#e3868f",
+          "#ffaab3",
+          "#ffcfd7"
+        ]
+      },
+      "band-normal": {
+        "role": "secondary",
+        "displayName": "Platform Grey",
+        "canonical": "oklch(65.1% 0.015 258)",
+        "tonalRamp": [
+          "#070b12",
+          "#21252d",
+          "#3d424a",
+          "#5c626a",
+          "#7d838c",
+          "#9fa5af",
+          "#c3cad3",
+          "#e8eff9"
+        ]
+      },
+      "band-quieter": {
+        "role": "secondary",
+        "displayName": "Pale Sky",
+        "canonical": "oklch(76.8% 0.089 248)",
+        "tonalRamp": [
+          "#00082e",
+          "#00264d",
+          "#12456e",
+          "#346591",
+          "#5687b5",
+          "#78aada",
+          "#9bcfff",
+          "#c0f5ff"
+        ]
+      },
+      "band-much-quieter": {
+        "role": "secondary",
+        "displayName": "Signal Blue",
+        "canonical": "oklch(68.3% 0.171 253)",
+        "tonalRamp": [
+          "#00003b",
+          "#00215c",
+          "#00427f",
+          "#2763a3",
+          "#4a85c8",
+          "#6da9ee",
+          "#90cdff",
+          "#b4f3ff"
+        ]
+      },
+      "band-unknown": {
+        "role": "secondary",
+        "displayName": "Dead Pixel Grey",
+        "canonical": "oklch(54.4% 0.015 262)",
+        "tonalRamp": [
+          "#080b12",
+          "#21252d",
+          "#3e424a",
+          "#5d616a",
+          "#7d838c",
+          "#a0a5af",
+          "#c4c9d3",
+          "#e9eff9"
+        ]
+      },
+      "line-good": {
+        "role": "neutral",
+        "displayName": "Unlit Line",
+        "canonical": "oklch(41.1% 0.017 258)",
+        "tonalRamp": [
+          "#070b12",
+          "#20252d",
+          "#3d424b",
+          "#5b626b",
+          "#7c838d",
+          "#9fa6b0",
+          "#c3cad4",
+          "#e8effa"
+        ]
+      },
+      "led-bloom": {
+        "role": "primary",
+        "displayName": "LED Bloom",
+        "canonical": "rgb(255 176 32 / 0.32)",
+        "tonalRamp": [
+          "#240000",
+          "#441500",
+          "#653400",
+          "#885500",
+          "#ac761a",
+          "#d19945",
+          "#f7be6b",
+          "#ffe390"
+        ]
+      },
+      "map-water": {
+        "role": "neutral",
+        "displayName": "Thames Ink",
+        "canonical": "oklch(20.4% 0.030 249)",
+        "tonalRamp": [
+          "#030c17",
+          "#1a2633",
+          "#364351",
+          "#556372",
+          "#758494",
+          "#97a7b7",
+          "#bbcbdc",
+          "#e0f1ff"
+        ]
+      },
+      "map-place": {
+        "role": "neutral",
+        "displayName": "Area Name",
+        "canonical": "oklch(49.5% 0.014 260)",
+        "tonalRamp": [
+          "#080b11",
+          "#21252c",
+          "#3e424a",
+          "#5d626a",
+          "#7d838b",
+          "#a0a5ae",
+          "#c4c9d3",
+          "#e9eff8"
+        ]
+      },
+      "map-place-minor": {
+        "role": "neutral",
+        "displayName": "Minor Area Name",
+        "canonical": "oklch(41.2% 0.013 262)",
+        "tonalRamp": [
+          "#080b11",
+          "#22252b",
+          "#3e4249",
+          "#5d6169",
+          "#7e838a",
+          "#a1a5ad",
+          "#c5c9d2",
+          "#eaeff7"
+        ]
+      },
+      "map-station-label": {
+        "role": "neutral",
+        "displayName": "Station Name",
+        "canonical": "oklch(86.5% 0.018 85)",
+        "tonalRamp": [
+          "#0f0b04",
+          "#29241b",
+          "#464138",
+          "#666156",
+          "#878277",
+          "#aaa499",
+          "#cec8bd",
+          "#f4eee2"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "led-display": {
+        "displayName": "LED Display",
+        "purpose": "The verdict, the detail panel's big crowding figure and the error title. Steps up to led-display-wide from 640px to 1023px."
+      },
+      "led-display-wide": {
+        "displayName": "LED Display (wide)",
+        "purpose": "The verdict between 640px and 1023px only."
+      },
+      "led-title": {
+        "displayName": "LED Title",
+        "purpose": "The detail panel's name on the amber head."
+      },
+      "led-row": {
+        "displayName": "LED Row",
+        "purpose": "Board titles, row names and values, the clock, line status."
+      },
+      "led-small": {
+        "displayName": "LED Small",
+        "purpose": "Ranks, masthead name, verdict readout, phone line status."
+      },
+      "body-lg": {
+        "displayName": "Body Large",
+        "purpose": "Verdict headline (46ch) and detail phrase."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Detail prose (60ch) and the search input."
+      },
+      "body-sm": {
+        "displayName": "Body Small",
+        "purpose": "Tickers, notices, facts, chips, segmented buttons, footer about."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Board meta, freshness, map key, board controls, attribution."
+      },
+      "map-label": {
+        "displayName": "Map Label (Noto Sans Medium)",
+        "purpose": "MapLibre glyph-server face, map only: line/station names 12px (selected station 13px); area names uppercase, 0.14em tracking, 10-12px, dim."
+      }
+    },
+    "shadows": [
+      {
+        "name": "sheet",
+        "value": "0 -12px 32px rgb(0 0 0 / 0.55)",
+        "purpose": "Phone detail sheet rising from the bottom edge."
+      },
+      {
+        "name": "card",
+        "value": "0 16px 40px rgb(0 0 0 / 0.6)",
+        "purpose": "Desktop detail card floating over the map."
+      },
+      {
+        "name": "map-control",
+        "value": "0 2px 8px rgb(0 0 0 / 0.4)",
+        "purpose": "Re-dressed MapLibre zoom group."
+      },
+      {
+        "name": "led-bloom",
+        "value": "0 0 6px rgb(255 176 32 / 0.32)",
+        "purpose": "text-shadow glow on lit amber glyphs, the changed pip and the severe key stroke; removed on band figures and selected rows."
+      },
+      {
+        "name": "segmented-pressed",
+        "value": "inset 0 -2px 0 var(--led)",
+        "purpose": "Amber underline on the pressed segment of a mode toggle (lit, not inverted)."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "All state transitions and panel entries."
+      },
+      {
+        "name": "row-hover",
+        "value": "150ms var(--ease-out)",
+        "purpose": "Row background and colour change."
+      },
+      {
+        "name": "rescan",
+        "value": "480ms steps(12, end)",
+        "purpose": "Changed-row column wipe (clip-path inset 100% to 0) on name and value."
+      },
+      {
+        "name": "sheet-in",
+        "value": "260ms var(--ease-out)",
+        "purpose": "Detail panel entry: 24px up on phone, 8px down on desktop, with fade."
+      },
+      {
+        "name": "ticker",
+        "value": "linear, 60px/s, min 12s",
+        "purpose": "Overflowing disruption text; pausable, static under reduced motion."
+      },
+      {
+        "name": "chevron",
+        "value": "200ms var(--ease-out)",
+        "purpose": "Expand/collapse chevron rotation."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "phone-compact",
+        "value": "max-width: 559px"
+      },
+      {
+        "name": "verdict-wide",
+        "value": "640px"
+      },
+      {
+        "name": "desktop",
+        "value": "1024px"
+      }
+    ],
+    "mapLayers": [
+      {
+        "name": "lines-casing",
+        "value": "housing, 4px to 7px"
+      },
+      {
+        "name": "lines-good",
+        "value": "line-good, 1.25px to 2.5px"
+      },
+      {
+        "name": "lines-minor",
+        "value": "led, dashed 2/1.5, 2px to 3.5px"
+      },
+      {
+        "name": "lines-severe",
+        "value": "led, 2.5px to 4.5px over an 8px to 14px glow, blur 6 to 10"
+      },
+      {
+        "name": "line-selected",
+        "value": "corridor, 3px to 5px over a 10px to 16px glow at 0.28; other lines and labels 30%, off-line stations 25%"
+      },
+      {
+        "name": "stations",
+        "value": "pixel 2.5px (normal or no data); busier/quieter 3.5px + deviation x 8 (capped); x0.85 at z10 to x1.5 at z14"
+      },
+      {
+        "name": "stations-bloom",
+        "value": "much_busier and much_quieter only: radius x2.2, blur 1, opacity 0.35"
+      },
+      {
+        "name": "order",
+        "value": "background, water, network, station bloom and dots, selected ring, line labels, area names, station labels"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Board Row",
+      "kind": "custom",
+      "refersTo": "board-row",
+      "description": "A ranked row on the platform board: rank, name and value on the 48px module; hover raises the panel tone, aria-pressed inverts to amber.",
+      "html": "<ol class=\"ds-rows\"><li><button class=\"ds-row\" aria-pressed=\"false\"><span class=\"ds-pip\"></span><span class=\"ds-led ds-rank\">1st</span><span class=\"ds-led ds-name\">Elizabeth line</span><span class=\"ds-led ds-value\">Severe delays</span></button></li><li><button class=\"ds-row\" aria-pressed=\"true\"><span class=\"ds-led ds-rank\">2nd</span><span class=\"ds-led ds-name\">Northern</span><span class=\"ds-led ds-value\">Minor delays</span></button></li><li><button class=\"ds-row\" aria-pressed=\"false\"><span class=\"ds-led ds-rank\">3rd</span><span class=\"ds-led ds-name\">Bank</span><span class=\"ds-led ds-value ds-figure\" style=\"color:var(--band-much-busier,#ff4d5e)\"><span class=\"ds-dot\" style=\"--c:var(--band-much-busier,#ff4d5e)\"></span>+38%</span></button></li></ol>",
+      "css": ".ds-rows{list-style:none;margin:0;padding:0;background:var(--housing,#0b0c0e);width:420px}.ds-rows>li+li{border-top:1px solid var(--seam,#23262c)}.ds-row{position:relative;display:grid;grid-template-columns:3.25rem minmax(0,1fr) auto;align-items:center;gap:12px;width:100%;min-height:48px;padding:8px 16px;border:0;background:transparent;text-align:left;cursor:pointer;transition:background-color 150ms cubic-bezier(0.16,1,0.3,1)}.ds-row:hover{background:var(--panel-raised,#171a1f)}.ds-row:focus-visible{outline:2px solid var(--led,#ffb020);outline-offset:-2px}.ds-led{font-family: var(--font-led, \"Doto\", ui-monospace, monospace); font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; font-variant-numeric: tabular-nums;color:var(--led,#ffb020);text-shadow:0 0 6px var(--led-bloom,rgb(255 176 32 / 0.32))}.ds-rank{font-size:1rem;color:var(--led-dim,#c48c2c)}.ds-name{font-size:1.25rem;line-height:1.15}.ds-value{font-size:1.25rem;text-align:right;white-space:nowrap}.ds-figure{display:inline-flex;align-items:center;gap:8px;text-shadow:none}.ds-dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--c)}.ds-pip{position:absolute;left:6px;top:50%;width:6px;height:6px;margin-top:-3px;border-radius:50%;background:var(--led,#ffb020);box-shadow:0 0 6px var(--led-bloom,rgb(255 176 32 / 0.32))}.ds-row[aria-pressed=true]{background:var(--led,#ffb020)}.ds-row[aria-pressed=true] .ds-led{color:var(--select-ink,#0b0c0e);text-shadow:none}.ds-row[aria-pressed=true]:focus-visible{outline-color:var(--corridor,#f5f1e6)}"
+    },
+    {
+      "name": "Board Head",
+      "kind": "nav",
+      "refersTo": "board-head",
+      "description": "The 48px panel strip that titles a board in LED type, with meta or a control on the right.",
+      "html": "<div class=\"ds-board-head\"><h2 class=\"ds-board-title\">Lines</h2><span class=\"ds-board-meta\">Worst first</span></div>",
+      "css": ".ds-board-head{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;padding:8px 16px;background:var(--panel,#111317);border-bottom:1px solid var(--seam,#23262c);width:420px}.ds-board-title{margin:0;font-family: var(--font-led, \"Doto\", ui-monospace, monospace); font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; font-variant-numeric: tabular-nums;font-size:1.25rem;color:var(--led,#ffb020);text-shadow:0 0 6px var(--led-bloom,rgb(255 176 32 / 0.32))}.ds-board-meta{font-family:var(--font-sans,'Atkinson Hyperlegible Next',system-ui,sans-serif);font-size:0.8125rem;color:var(--ink-2,#aba498)}"
+    },
+    {
+      "name": "Verdict",
+      "kind": "custom",
+      "refersTo": "led-display",
+      "description": "The board's top line: the LED verdict, a prose headline naming the baseline and a dashed-rule readout.",
+      "html": "<section class=\"ds-verdict\"><h1 class=\"ds-verdict-title\">Busier than usual</h1><p class=\"ds-verdict-headline\">Versus a typical Tuesday at this time.</p><dl class=\"ds-readout\"><div><dt>Network</dt><dd style=\"color:var(--band-busier,#f0929b);text-shadow:none\">+12% vs usual</dd></div><div><dt>Lines</dt><dd>3 disrupted</dd></div></dl></section>",
+      "css": ".ds-verdict{padding:24px 16px 16px;background:var(--housing,#0b0c0e);width:420px}.ds-verdict-title{margin:0;font-family: var(--font-led, \"Doto\", ui-monospace, monospace); font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; font-variant-numeric: tabular-nums;font-weight:900;font-size:2.5rem;line-height:1.05;letter-spacing:0.02em;color:var(--led,#ffb020);text-shadow:0 0 6px var(--led-bloom,rgb(255 176 32 / 0.32));text-wrap:balance}.ds-verdict-headline{margin:12px 0 0;font-family:var(--font-sans,'Atkinson Hyperlegible Next',system-ui,sans-serif);font-size:1.125rem;line-height:1.5;color:var(--ink,#ece6da)}.ds-readout{display:flex;flex-wrap:wrap;gap:4px 24px;margin:16px 0 0;padding-top:12px;border-top:1px dashed var(--seam-strong,#33373e);font-family: var(--font-led, \"Doto\", ui-monospace, monospace); font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; font-variant-numeric: tabular-nums;font-size:1rem;color:var(--led,#ffb020);text-shadow:0 0 6px var(--led-bloom,rgb(255 176 32 / 0.32))}.ds-readout div{display:flex;gap:8px}.ds-readout dt{color:var(--led-dim,#c48c2c)}.ds-readout dd{margin:0}"
+    },
+    {
+      "name": "Masthead",
+      "kind": "nav",
+      "refersTo": "masthead",
+      "description": "Name, Unofficial tag, ticking LED clock and freshness readout on a 48px panel strip.",
+      "html": "<header class=\"ds-masthead\"><p><span class=\"ds-mast-name\">Pulse of London</span><span class=\"ds-mast-tag\">Unofficial</span></p><div class=\"ds-mast-clock\"><span class=\"ds-clock\">08:42:17</span><span class=\"ds-fresh\">Updated 20s ago</span></div></header>",
+      "css": ".ds-masthead{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:48px;padding:8px 16px;background:var(--panel,#111317);border-bottom:1px solid var(--seam,#23262c);width:420px}.ds-masthead p{margin:0}.ds-mast-name{font-family: var(--font-led, \"Doto\", ui-monospace, monospace); font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; font-variant-numeric: tabular-nums;font-size:1rem;letter-spacing:0.08em;color:var(--led-dim,#c48c2c);text-shadow:0 0 6px var(--led-bloom,rgb(255 176 32 / 0.32))}.ds-mast-tag{margin-left:8px;font-family:var(--font-sans,'Atkinson Hyperlegible Next',system-ui,sans-serif);font-size:0.8125rem;color:var(--ink-3,#8d877c)}.ds-mast-clock{display:flex;flex-direction:column;align-items:flex-end;line-height:1.2}.ds-clock{font-family: var(--font-led, \"Doto\", ui-monospace, monospace); font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; font-variant-numeric: tabular-nums;font-size:1.25rem;color:var(--led,#ffb020);text-shadow:0 0 6px var(--led-bloom,rgb(255 176 32 / 0.32))}.ds-fresh{font-family:var(--font-sans,'Atkinson Hyperlegible Next',system-ui,sans-serif);font-size:0.8125rem;color:var(--ink-2,#aba498)}"
+    },
+    {
+      "name": "Search Input",
+      "kind": "input",
+      "refersTo": "search-input",
+      "description": "Station finder: housing ground, seam border, amber border on focus.",
+      "html": "<label class=\"ds-search\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" aria-hidden=\"true\"><circle cx=\"7\" cy=\"7\" r=\"4.25\"/><path d=\"M10.25 10.25L13.5 13.5\"/></svg><input type=\"search\" placeholder=\"Find a station\"></label>",
+      "css": ".ds-search{position:relative;display:block;width:280px}.ds-search svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--ink-3,#8d877c);pointer-events:none}.ds-search input{width:100%;min-height:40px;padding:0 12px 0 34px;border:1px solid var(--seam-strong,#33373e);border-radius:2px;background:var(--housing,#0b0c0e);color:var(--ink,#ece6da);font-family:var(--font-sans,'Atkinson Hyperlegible Next',system-ui,sans-serif);font-size:1rem;caret-color:var(--led,#ffb020)}.ds-search input::placeholder{color:var(--ink-3,#8d877c)}.ds-search input:focus-visible{outline:2px solid var(--led,#ffb020);outline-offset:0;border-color:var(--led,#ffb020)}"
+    },
+    {
+      "name": "Line Chip",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Lines serving a station, in the detail panel; disrupted lines carry amber text.",
+      "html": "<div class=\"ds-chips\"><button class=\"ds-chip\">Victoria</button><button class=\"ds-chip\" data-level=\"severe\">Central</button></div>",
+      "css": ".ds-chips{display:flex;gap:8px}.ds-chip{min-height:36px;padding:0 12px;border:1px solid var(--seam-strong,#33373e);border-radius:2px;background:var(--housing,#0b0c0e);color:var(--ink,#ece6da);font-family:var(--font-sans,'Atkinson Hyperlegible Next',system-ui,sans-serif);font-size:0.875rem;cursor:pointer}.ds-chip:hover{border-color:var(--led-dim,#c48c2c)}.ds-chip:focus-visible{outline:2px solid var(--led,#ffb020);outline-offset:2px}.ds-chip[data-level=severe],.ds-chip[data-level=minor]{color:var(--led,#ffb020);border-color:var(--led-dim,#c48c2c)}"
+    },
+    {
+      "name": "Board Control",
+      "kind": "button",
+      "refersTo": "board-control",
+      "description": "Small bordered control in a board head (pause details); pressed lights its text amber.",
+      "html": "<button class=\"ds-control\" aria-pressed=\"false\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M6 4v8M10 4v8\"/></svg>Pause details</button>",
+      "css": ".ds-control{display:inline-flex;align-items:center;gap:8px;min-height:32px;padding:0 12px;border:1px solid var(--seam-strong,#33373e);border-radius:2px;background:var(--housing,#0b0c0e);color:var(--ink-2,#aba498);font-family:var(--font-sans,'Atkinson Hyperlegible Next',system-ui,sans-serif);font-size:0.8125rem;cursor:pointer}.ds-control:hover{color:var(--ink,#ece6da);border-color:var(--led-dim,#c48c2c)}.ds-control:focus-visible{outline:2px solid var(--led,#ffb020);outline-offset:2px}.ds-control[aria-pressed=true]{color:var(--led,#ffb020);border-color:var(--led-dim,#c48c2c)}"
+    },
+    {
+      "name": "Segmented Toggle",
+      "kind": "button",
+      "refersTo": "segmented-button",
+      "description": "Busiest / Quietest mode toggle; the pressed segment is lit (raised ground, amber text, amber underline), never inverted.",
+      "html": "<div class=\"ds-seg\" role=\"group\"><button aria-pressed=\"true\">Busiest</button><button aria-pressed=\"false\">Quietest</button></div>",
+      "css": ".ds-seg{display:inline-flex;border:1px solid var(--seam-strong,#33373e);border-radius:2px;overflow:hidden}.ds-seg button{min-height:40px;padding:0 12px;border:0;background:var(--housing,#0b0c0e);color:var(--ink-2,#aba498);font-family:var(--font-sans,'Atkinson Hyperlegible Next',system-ui,sans-serif);font-size:0.875rem;cursor:pointer}.ds-seg button+button{border-left:1px solid var(--seam-strong,#33373e)}.ds-seg button:hover{color:var(--ink,#ece6da)}.ds-seg button:focus-visible{outline:2px solid var(--led,#ffb020);outline-offset:-2px}.ds-seg button[aria-pressed=true]{background:var(--panel-raised,#171a1f);color:var(--led,#ffb020);font-weight:700;box-shadow:inset 0 -2px 0 var(--led,#ffb020)}"
+    },
+    {
+      "name": "Detail Panel",
+      "kind": "card",
+      "refersTo": "detail-panel",
+      "description": "The one floating surface: amber inverted head, band-coloured figure, prose body.",
+      "html": "<section class=\"ds-detail\"><div class=\"ds-detail-head\"><h2>Bank</h2><button aria-label=\"Close\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\"><path d=\"M4 4l8 8M12 4l-8 8\"/></svg></button></div><div class=\"ds-detail-body\"><p class=\"ds-fig\"><span class=\"ds-big\" style=\"--c:var(--band-much-busier,#ff4d5e)\">+38%</span><span>Much busier than usual</span></p><p class=\"ds-prose\">Now 72% of its busiest level; usually 52% at this time of day.</p></div></section>",
+      "css": ".ds-detail{width:360px;background:var(--panel,#111317);border:1px solid var(--led-dim,#c48c2c);box-shadow:0 16px 40px rgb(0 0 0 / 0.6);font-family:var(--font-sans,'Atkinson Hyperlegible Next',system-ui,sans-serif);color:var(--ink,#ece6da)}.ds-detail-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:12px 16px;background:var(--led,#ffb020);color:var(--select-ink,#0b0c0e)}.ds-detail-head h2{margin:0;font-family:var(--font-led,'Doto',ui-monospace,monospace);font-weight:900;font-size:1.5rem;text-transform:uppercase;letter-spacing:0.04em;line-height:1.15}.ds-detail-head button{display:grid;place-items:center;width:40px;height:40px;margin:-4px -8px -4px 0;border:0;border-radius:2px;background:transparent;color:var(--select-ink,#0b0c0e);cursor:pointer}.ds-detail-head button:hover{background:rgb(11 12 14 / 0.12)}.ds-detail-head button:focus-visible{outline:2px solid var(--select-ink,#0b0c0e);outline-offset:-2px}.ds-detail-body{display:grid;gap:16px;padding:16px}.ds-fig{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:0;font-size:1.125rem}.ds-big{font-family:var(--font-led,'Doto',ui-monospace,monospace);font-weight:900;font-size:2.5rem;line-height:1;color:var(--c)}.ds-prose{margin:0;font-size:1rem;line-height:1.5}"
+    },
+    {
+      "name": "Crowding Key",
+      "kind": "custom",
+      "refersTo": "band-normal",
+      "description": "The deviation scale and line-status strokes as drawn on the map, including the hollow no-data ring.",
+      "html": "<ul class=\"ds-key\"><li><span class=\"ds-kd\" style=\"--c:var(--band-much-busier,#ff4d5e)\"></span>Much busier</li><li><span class=\"ds-kd\" style=\"--c:var(--band-busier,#f0929b)\"></span>Busier</li><li><span class=\"ds-kd\" style=\"--c:var(--band-normal,#8a9099)\"></span>Normal</li><li><span class=\"ds-kd\" style=\"--c:var(--band-quieter,#86b9ea)\"></span>Quieter</li><li><span class=\"ds-kd\" style=\"--c:var(--band-much-quieter,#3e9bff)\"></span>Much quieter</li><li><span class=\"ds-kd ds-ring\"></span>No live data</li><li><span class=\"ds-st\"></span>Good</li><li><span class=\"ds-st ds-minor\"></span>Minor</li><li><span class=\"ds-st ds-severe\"></span>Severe</li></ul>",
+      "css": ".ds-key{display:flex;flex-wrap:wrap;gap:4px 16px;margin:0;padding:12px 16px;list-style:none;width:420px;background:var(--panel,#111317);font-family:var(--font-sans,'Atkinson Hyperlegible Next',system-ui,sans-serif);font-size:0.8125rem;color:var(--ink-2,#aba498)}.ds-key li{display:inline-flex;align-items:center;gap:8px}.ds-kd{width:10px;height:10px;border-radius:50%;background:var(--c)}.ds-ring{background:transparent;box-shadow:inset 0 0 0 2px var(--band-unknown,#6b7079)}.ds-st{width:22px;border-top:2px solid var(--line-good,#454b54)}.ds-minor{border-top:3px dashed var(--led,#ffb020)}.ds-severe{border-top:4px solid var(--led,#ffb020);box-shadow:0 0 6px var(--led-bloom,rgb(255 176 32 / 0.32))}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Platform Board",
+    "overview": "The network reads like the dot-matrix departure board on a UK station platform. A black housing, divided by hairline frame seams, carries amber LED glyphs: the verdict is the board's top line, and lines and stations are ranked rows, worst first. The map is the board's lit platform diagram, a near-black basemap where only data is allowed to glow. Prose that explains, qualifies or attributes sits beside the glyphs in a calm, highly legible sans.\n\nDensity is that of a working board: one 8px module sets row height, gutters and seams, and every row is a full-width 48px tap target. The board is flat. Depth comes only from light, through LED bloom, the glow on severe lines and the white selection corridor, plus the one floating detail panel. Motion is mechanical and stepped, like a board refreshing, never springy or decorative.\n\nTwo signals live on this board and never share an encoding. Line status is amber, because that is \"TfL says\". Station crowding runs on a red-to-blue deviation scale measured against a typical day. Selection belongs to neither signal: it is the board's own inversion.",
+    "keyCharacteristics": [
+      "Black housing (`housing`, `panel`) with 1px seams; no cards, no rounded panels.",
+      "Amber Doto LED glyphs for board copy and line status; Atkinson Hyperlegible Next for all prose.",
+      "A red/grey/blue crowding scale, with a hollow ring for \"no live data\".",
+      "One selection treatment: an amber field with black glyphs on the board, a white corridor on the map.",
+      "The map is the lit network only: a black ground, a faint Thames, dim area names, and LED-pixel stations.",
+      "Tabular figures everywhere; LED type only at five whole-rem steps.",
+      "Changed rows re-scan in place and hold an amber pip until they have been seen."
+    ],
+    "rules": [
+      {
+        "name": "The Two Signals Rule",
+        "body": "Amber means line status (\"TfL says\"); red-to-blue means crowding against a typical day. Amber never colours a crowding value, and the band colours never colour line status. `lib/colors.ts` leaves amber out of `BAND_COLORS` on purpose.",
+        "section": "colors"
+      },
+      {
+        "name": "The Kept-in-Sync Rule",
+        "body": "The band and line colours exist twice: as `--band-*` and `--line-good` in `tokens.css`, and as `BAND_COLORS` and `STATUS_COLORS` in `lib/colors.ts` (for MapLibre paint). Change them together. Map surfaces come only from `MAP_COLORS`; MapView never hardcodes a hex.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Selection Rule",
+        "body": "A picked line or station gets exactly two marks: the amber inversion on its board row (and the detail head), and the Corridor White line or ring on the map. Nothing else signals selection.",
+        "section": "colors"
+      },
+      {
+        "name": "The Honest Ring Rule",
+        "body": "No data is a hollow ring in Dead Pixel Grey, labelled \"No data\". It never borrows Platform Grey, which means \"normal\".",
+        "section": "colors"
+      },
+      {
+        "name": "The Whole Steps Rule",
+        "body": "LED type only ever sits on the five `--led-*` steps (1, 1.25, 1.5, 2.5, 3.5rem), like a bitmap specimen. Never set Doto with a clamp, a fluid value or an off-step size.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tabular Board Rule",
+        "body": "`font-variant-numeric: tabular-nums` is set on the body and on `.led`, so figures stay column-aligned on every row.",
+        "section": "typography"
+      },
+      {
+        "name": "The Glyphs Are Not Prose Rule",
+        "body": "Doto carries short board copy: names, statuses, figures and the verdict. Any sentence a visitor has to read (headline, disruption text, explanations, notices) is set in Atkinson Hyperlegible Next.",
+        "section": "typography"
+      },
+      {
+        "name": "The One Module Rule",
+        "body": "Row height, gutters, seams and glyph sizes all derive from the 8px module. A new board element must be at least 48px tall if it is tappable, and padded at 8px/16px.",
+        "section": "layout"
+      },
+      {
+        "name": "The Light Not Lift Rule",
+        "body": "Emphasis on the board comes from lighting glyphs or strokes, never from raising a surface. Only the detail panel floats.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do keep amber for board copy, line status and feed alerts, and keep crowding on the `--band-*` scale.",
+      "Do draw no-data as a hollow Dead Pixel Grey ring and label it \"No data\".",
+      "Do express selection only as the amber row or head inversion on the board and the Corridor White line or ring on the map.",
+      "Do keep the map to the lit network: housing ground, Thames Ink water, dim area names, lines, and stations as LED pixels.",
+      "Do set Doto only at the five `--led-*` steps, uppercase, and set every sentence in Atkinson Hyperlegible Next.",
+      "Do build rows and heads on the 8px module, at least 48px tall, separated by 1px seams.",
+      "Do give every band colour a second channel: a signed percentage, a phrase or a visually hidden description.",
+      "Do keep the \"Unofficial\" notice and the attribution in every layout."
+    ],
+    "donts": [
+      "Don't use amber, or a white glow, to show crowding, and don't use band colours for line status.",
+      "Don't use official TfL line colours, the roundel or Johnston to identify lines. Identify lines by their name labels and by selection.",
+      "Don't fill a no-data station with Platform Grey; grey means \"normal\".",
+      "Don't set Doto at fluid or off-step sizes, or use it for running sentences.",
+      "Don't raise board sections with shadows or rounded cards; only the detail panel floats.",
+      "Don't invent a second selection treatment (outlines, tints, underlines) for picked rows or map features.",
+      "Don't add streets, parks, buildings, POIs or icon sprites back to the basemap, and don't hardcode map hexes outside `MAP_COLORS`."
+    ]
+  }
+}

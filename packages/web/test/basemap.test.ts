@@ -17,3 +17,11 @@ describe("basemapStyle", () => {
     expect(style.layers.length).toBeGreaterThan(0);
   });
 });
+
+describe("basemapStyle — the board's own diagram", () => {
+  it("draws only ground, water and place names: no streets, no icons", () => {
+    const style = basemapStyle("https://cdn.example/london.pmtiles");
+    expect(style.layers.map((l) => l.id)).toEqual(["background", "water", "places-locality", "places-neighbourhood"]);
+    expect(style.sprite).toBeUndefined();
+  });
+});
